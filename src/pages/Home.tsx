@@ -14,13 +14,13 @@ const PATH_STYLE = [
 /** 세종대왕 말풍선 */
 function Bubble({ ko, ro, children, tail = 'left' }: { ko: string; ro: string; children: React.ReactNode; tail?: 'left' | 'top-then-left' }) {
   return (
-    <div className="relative rounded-3xl border-2 border-ink bg-surface p-5 shadow-[6px_6px_0_var(--blue)]">
+    <div className="relative rounded-3xl border-2 border-ink bg-surface p-4 shadow-[6px_6px_0_var(--blue)]">
       <div className="flex items-center justify-between gap-3">
-        <p className="font-hangul text-2xl sm:text-3xl" lang="ko">{ko}</p>
+        <p className="font-hangul text-xl sm:text-2xl" lang="ko">{ko}</p>
         <PlayButton text={ko} />
       </div>
-      <p className="text-sm font-bold text-blue">{ro}</p>
-      <p className="mt-2 text-muted">{children}</p>
+      <p className="text-xs font-bold text-blue">{ro}</p>
+      <p className="mt-2 text-sm text-muted">{children}</p>
       <span
         aria-hidden="true"
         className={`absolute w-5 h-5 bg-surface border-ink rotate-45 ${
@@ -40,7 +40,7 @@ export default function Home() {
       <main id="top">
         {/* 히어로: 제목 + 세종대왕 */}
         <section className="gutter border-b border-line overflow-hidden">
-          <div className="max-w-6xl mx-auto py-12 sm:py-16 grid gap-10 lg:grid-cols-[1.05fr_1fr] lg:items-center">
+          <div className="max-w-6xl mx-auto pt-10 pb-6 sm:pt-12 sm:pb-8 grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:items-center">
             <div className="min-w-0">
               <p className="inline-flex items-center gap-2 rounded-full tint-yellow px-3 py-1 text-xs font-bold">
                 <span className="w-2 h-2 rounded-full bg-red" /> For total beginners · 입문 · 초보
@@ -62,8 +62,8 @@ export default function Home() {
               </ul>
             </div>
 
-            <div className="min-w-0 grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] sm:items-center">
-              <div className="relative mx-auto w-full max-w-[17rem]">
+            <div className="min-w-0 grid gap-4 sm:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] sm:items-center">
+              <div className="relative mx-auto w-full max-w-[17rem] sm:max-w-[24rem]">
                 <div className="absolute inset-x-2 bottom-2 top-10 rounded-full tint-yellow" aria-hidden="true" />
                 <Sejong className="relative w-full h-auto" />
               </div>
@@ -76,21 +76,21 @@ export default function Home() {
 
         {/* 학습 순서 */}
         <section id="path" className="gutter tint-yellow border-b border-line">
-          <div className="max-w-6xl mx-auto py-16">
+          <div className="max-w-6xl mx-auto py-8 sm:py-10">
             <p className="eyebrow text-xs font-bold text-red">Your path</p>
-            <h2 className="font-display font-extrabold text-3xl sm:text-4xl mt-2 tracking-tight">Four steps from zero</h2>
-            <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <h2 className="font-display font-extrabold text-2xl sm:text-3xl mt-1 tracking-tight">Four steps from zero</h2>
+            <ol className="mt-5 grid gap-3 grid-cols-2 lg:grid-cols-4">
               {STEPS.map((s, i) => {
                 const st = PATH_STYLE[i]
                 return (
                   <li key={s.n}>
-                    <a href={stepPath(s)} className={`block h-full rounded-2xl p-5 border-2 border-transparent hover:border-ink ${st.card === 'bg-yellow text-onyellow' ? 'bg-surface' : st.card} transition-transform hover:-translate-y-1`}>
+                    <a href={stepPath(s)} className={`block h-full rounded-2xl px-4 py-3.5 border-2 border-transparent hover:border-ink ${st.card === 'bg-yellow text-onyellow' ? 'bg-surface' : st.card} transition-transform hover:-translate-y-1`}>
                       <div className="flex items-center justify-between">
-                        <span className={`font-display font-extrabold text-3xl ${st.num}`}>{s.n}</span>
+                        <span className={`font-display font-extrabold text-xl ${st.num}`}>{s.n}</span>
                         <span className={`chip ${st.chip}`}>{s.level}</span>
                       </div>
-                      <h3 className="font-bold text-lg mt-6">{s.name} <span className="font-hangul font-normal text-muted" lang="ko">{s.ko}</span></h3>
-                      <p className="text-sm mt-1 text-muted">{s.blurb}</p>
+                      <h3 className="font-bold mt-2">{s.name} <span className="font-hangul font-normal text-muted" lang="ko">{s.ko}</span></h3>
+                      <p className="text-xs mt-0.5 text-muted">{s.blurb}</p>
                     </a>
                   </li>
                 )
