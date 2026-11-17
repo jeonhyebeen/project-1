@@ -2,6 +2,9 @@
 export const SITE_URL = 'https://hangul-easy.pages.dev'
 export const SITE_NAME = 'HangulEasy'
 
+// 구글 클라우드 콘솔 → 클라이언트에서 받은 웹 클라이언트 ID. 비어 있으면 로그인 버튼이 보이지 않습니다.
+export const GOOGLE_CLIENT_ID = ''
+
 export type StepMeta = {
   n: number
   slug: string
@@ -52,8 +55,13 @@ export const HOME = {
   description: 'Learn to read Hangul in five easy steps: letters, greetings, everyday words, K-pop phrases and Korean culture. Free lessons with audio and romanization.',
 }
 
+export const PRIVACY = {
+  title: 'Privacy Policy',
+  description: 'How HangulEasy handles your information when you sign in with Google.',
+}
+
 export const stepPath = (s: StepMeta) => `/${s.slug}/`
-export const ROUTES = ['/', ...STEPS.map(stepPath)]
+export const ROUTES = ['/', ...STEPS.map(stepPath), '/privacy/']
 
 export function normalizePath(path: string) {
   const p = path.endsWith('/') ? path : path + '/'

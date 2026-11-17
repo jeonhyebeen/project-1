@@ -1,9 +1,10 @@
-import { HOME, SITE_NAME, SITE_URL, STEPS, normalizePath, stepForPath } from './site'
+import { HOME, PRIVACY, SITE_NAME, SITE_URL, STEPS, normalizePath, stepForPath } from './site'
 
 export function pageMeta(path: string) {
-  const step = stepForPath(path)
-  const base = step ?? HOME
-  return { path: normalizePath(path), step, title: `${base.title} | ${SITE_NAME}`, description: base.description }
+  const p = normalizePath(path)
+  const step = stepForPath(p)
+  const base = step ?? (p === '/privacy/' ? PRIVACY : HOME)
+  return { path: p, step, title: `${base.title} | ${SITE_NAME}`, description: base.description }
 }
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -36,6 +37,8 @@ export function head(path: string) {
           ],
         },
       ]
+    : p === '/privacy/'
+    ? [{ '@context': 'https://schema.org', '@type': 'WebPage', name: title, url }]
     : [
         { '@context': 'https://schema.org', '@type': 'WebSite', name: SITE_NAME, url: SITE_URL + '/', inLanguage: 'en' },
         {

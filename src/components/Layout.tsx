@@ -1,4 +1,5 @@
 import { STEPS, stepPath } from '../site'
+import { AuthButton } from '../auth'
 
 export function Logo() {
   return (
@@ -15,13 +16,14 @@ export function Logo() {
   )
 }
 
-/** current: 지금 보고 있는 단계 번호. 메인 페이지는 0 */
+/** current: 지금 보고 있는 단계 번호. 메인 페이지는 0, 그 밖의 페이지는 -1 */
 export function Header({ current }: { current: number }) {
-  const focus = current || 1
+  const focus = current > 0 ? current : 1
   return (
     <header className="site-header sticky z-20 bg-bg border-b border-line gutter">
       <div className="max-w-6xl mx-auto flex items-center justify-between gap-4 py-3">
         <Logo />
+        <div className="flex items-center gap-2 sm:gap-3">
         <nav aria-label="Steps" className="flex items-center gap-1 sm:gap-2 text-sm font-bold">
           {STEPS.map((s) => {
             const active = s.n === current
@@ -42,6 +44,8 @@ export function Header({ current }: { current: number }) {
             </a>
           )}
         </nav>
+        <AuthButton />
+        </div>
       </div>
     </header>
   )
@@ -62,6 +66,7 @@ export function Footer() {
           {STEPS.map((s) => (
             <a key={s.n} href={stepPath(s)} className="hover:text-ink">{s.name}</a>
           ))}
+          <a href="/privacy/" className="hover:text-ink">Privacy</a>
         </nav>
       </div>
     </footer>
