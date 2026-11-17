@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'IsYun';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2202-2@1.0/LeeSeoyun.woff') format('woff');
+  font-weight: normal;
+  font-display: swap;
+}
+
+/* 색상 토큰: 밝은 화면 / 어두운 화면 */
+:root {
+  --bg: #F1F4EE;
+  --surface: #FFFFFF;
+  --ink: #17221D;
+  --muted: #56665D;
+  --line: #C9D3C8;
+  --apple: #C0283A;
+  --pine: #2B5845;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0F1713;
+    --surface: #16211B;
+    --ink: #E7EDE7;
+    --muted: #9CAAA1;
+    --line: #2B3A32;
+    --apple: #F2667A;
+    --pine: #7FBF9F;
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-apple: var(--apple);
+  --color-pine: var(--pine);
+  --font-display: 'IsYun', 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;
+  --font-sans: 'IsYun', 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+}
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    line-height: 1.65;
+    word-break: keep-all;
+  }
+  h1, h2, h3 { text-wrap: balance; }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--apple);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  section[id] { scroll-margin-top: 4rem; }
+}
+
+@utility gutter {
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+@utility eyebrow {
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+@utility tnum {
+  font-variant-numeric: tabular-nums;
+}
+@utility photo {
+  background:
+    repeating-linear-gradient(135deg, transparent 0 10px, color-mix(in oklab, var(--ink) 5%, transparent) 10px 11px),
+    color-mix(in oklab, var(--tint, var(--pine)) 22%, var(--surface));
+}
+
+/* 히어로 그림 카드 */
+.tile {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 8px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  transition: transform .2s ease;
+}
+.tile:hover { transform: translateY(-3px); }
+.tile svg { width: 100%; max-width: 120px; height: auto; display: block; }
+.tile figcaption { font-size: .9rem; text-align: center; line-height: 1.3; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .tile { transition: none; }
+  .tile:hover { transform: none; }
+}
+
+/* 일러스트 선과 채움 */
+.ill * { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.ill .fs { fill: var(--surface); }
+.ill .fa { fill: color-mix(in oklab, var(--apple) 28%, var(--surface)); }
+.ill .fA { fill: var(--apple); }
+.ill .fp { fill: color-mix(in oklab, var(--pine) 26%, var(--surface)); }
+.ill .fP { fill: var(--pine); }
+.ill .fk { fill: var(--ink); stroke: none; }
+.ill .sa { stroke: var(--apple); }
+.ill .sp { stroke: var(--pine); }
+.ill .ss { stroke: var(--surface); }
+.ill .thick { stroke-width: 6; }
+.ill .neck { stroke-width: 5; }
+.ill .halo { stroke-width: 5.5; }
+.ill .nostroke { stroke: none; }
