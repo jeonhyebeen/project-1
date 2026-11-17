@@ -44,7 +44,7 @@ export function head(path: string) {
         {
           '@context': 'https://schema.org',
           '@type': 'Course',
-          name: 'Korean for Beginners: Hangul, Greetings, Everyday Words, K-pop & Culture',
+          name: 'Korean for Beginners: Hangul, Words, Sentences & K-Life',
           description: HOME.description,
           url: SITE_URL + '/',
           inLanguage: 'en',

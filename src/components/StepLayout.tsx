@@ -123,7 +123,7 @@ export default function StepLayout({ n, heroTint, chips, h1, lede, lessons, quiz
                   </a>
                 ) : (
                   <a href="/" className="rounded-[18px] bg-red p-5 text-right text-white">
-                    <p className="text-xs opacity-80">All five steps done →</p>
+                    <p className="text-xs opacity-80">All {STEPS.length} steps done →</p>
                     <p className="font-bold text-lg">Back to the start <span className="font-hangul font-normal" lang="ko">처음으로</span></p>
                   </a>
                 )}

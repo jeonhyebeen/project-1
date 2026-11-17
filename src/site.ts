@@ -25,34 +25,28 @@ export const STEPS: StepMeta[] = [
     description: 'Learn the 10 basic Korean vowels and 14 consonants with audio, romanization and example words, then test yourself with a quick reading quiz.',
   },
   {
-    n: 2, slug: 'greetings', short: 'Greetings', name: 'Greetings', ko: '인사말', level: '입문 Starter',
-    blurb: 'Hello, thank you, sorry, goodbye. Polite and casual.',
-    title: 'Korean Greetings: Hello, Thank You, Sorry & Goodbye',
-    description: 'Say hello, thank you, sorry and goodbye in Korean. Learn when to use polite or casual speech, with audio and romanization for every phrase.',
+    n: 2, slug: 'words', short: 'Words', name: 'Korean words', ko: '단어', level: '입문 Starter',
+    blurb: 'Café, subway and store words, plus the words in K-pop songs.',
+    title: 'Everyday Korean Words: Café, Subway, Store & Songs',
+    description: 'Learn the Korean words you need at a café, on the subway and in a store, plus the words K-pop songs use again and again. Audio and romanization included.',
   },
   {
-    n: 3, slug: 'words', short: 'Words', name: 'Everyday words', ko: '생활 단어', level: '초보 Beginner',
-    blurb: 'Ordering coffee, riding the subway, paying at a store.',
-    title: 'Everyday Korean Words for Cafés, Subway & Shops',
-    description: 'Order coffee, read subway signs and pay at a store in Korean. Real conversations, key words and the “주세요” pattern for travelers and beginners.',
+    n: 3, slug: 'sentences', short: 'Sentences', name: 'Korean sentences', ko: '문장', level: '초보 Beginner',
+    blurb: 'Hello, thank you, sorry, “___, please”. Polite and casual.',
+    title: 'Basic Korean Sentences: Greetings, Polite Speech & Ordering',
+    description: 'Say hello, thank you, sorry and goodbye in Korean, choose polite or casual speech, order with “주세요” and read a song line word by word.',
   },
   {
-    n: 4, slug: 'kpop', short: 'K-pop', name: 'K-pop phrases', ko: 'K-pop 표현', level: '초보 Beginner',
-    blurb: 'Words you hear in songs, explained line by line.',
-    title: 'K-pop Korean: Words & Phrases from Songs, Explained',
-    description: 'Learn the Korean words K-pop songs use again and again, fan words like 최애 and 막내, and how to read a lyric line word by word.',
-  },
-  {
-    n: 5, slug: 'culture', short: 'Culture', name: 'Korean culture', ko: '한국 문화', level: '초보 Beginner',
-    blurb: 'Honorifics, holidays, table manners, daily life.',
-    title: 'Korean Culture Basics: Honorifics, Holidays & Table Manners',
-    description: 'How to address people in Korean, what happens on Seollal and Chuseok, table manners at a shared meal and daily habits you will notice in Korea.',
+    n: 4, slug: 'k-life', short: 'K-Life', name: 'K-Life', ko: 'K-라이프', level: '초보 Beginner',
+    blurb: 'Honorifics, holidays, table manners and K-pop fan talk.',
+    title: 'K-Life: Korean Culture, Manners, Holidays & K-pop Fan Talk',
+    description: 'How to address people in Korea, what happens on Seollal and Chuseok, table manners at a shared meal, daily habits and the words K-pop fans use.',
   },
 ]
 
 export const HOME = {
-  title: 'Learn the Korean Alphabet (Hangul) for Beginners & Korean Culture',
-  description: 'Learn to read Hangul in five easy steps: letters, greetings, everyday words, K-pop phrases and Korean culture. Free lessons with audio and romanization.',
+  title: 'Learn the Korean Alphabet (Hangul) for Beginners & Korean Life',
+  description: 'Learn Korean in four easy steps: Hangul letters, words, sentences and K-Life. Free lessons with audio and romanization.',
 }
 
 export const PRIVACY = {

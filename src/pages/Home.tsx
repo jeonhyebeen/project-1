@@ -6,8 +6,7 @@ const PATH_STYLE = [
   { card: 'bg-yellow text-onyellow', num: '', text: 'opacity-80', chip: 'bg-surface text-ink' },
   { card: 'tint-blue', num: 'text-blue', text: 'text-muted', chip: 'bg-surface' },
   { card: 'tint-red', num: 'text-red', text: 'text-muted', chip: 'bg-surface' },
-  { card: 'tint-blue', num: 'text-blue', text: 'text-muted', chip: 'bg-surface' },
-  { card: 'tint-red', num: 'text-red', text: 'text-muted', chip: 'bg-surface' },
+  { card: 'tint-good', num: 'text-good', text: 'text-muted', chip: 'bg-surface' },
 ]
 
 function StepLink({ n, label }: { n: number; label: string }) {
@@ -65,10 +64,10 @@ export default function Home() {
                 <span className="w-2 h-2 rounded-full bg-red" /> For total beginners · 입문 · 초보
               </p>
               <h1 className="font-display font-extrabold text-4xl sm:text-5xl leading-[1.1] mt-5 tracking-tight">
-                Learn the Korean Alphabet <span className="text-blue">(Hangul)</span> for Beginners &amp; <span className="squiggle">Korean Culture</span>
+                Learn the Korean Alphabet <span className="text-blue">(Hangul)</span> for Beginners &amp; <span className="squiggle">Korean Life</span>
               </h1>
               <p className="mt-5 max-w-xl text-lg text-muted">
-                Hangul was designed to be learned fast. Start with 14 consonants and 10 vowels, then move on to greetings, everyday words, song lyrics and Korean culture.
+                Hangul was designed to be learned fast. Start with 14 consonants and 10 vowels, then build up to words, sentences and everyday life in Korea.
               </p>
               <div className="mt-7 flex flex-wrap gap-3">
                 <a href={stepPath(STEPS[0])} className="rounded-full bg-red px-6 py-3 font-bold text-white">Start lesson 1</a>
@@ -88,8 +87,8 @@ export default function Home() {
         <section id="path" className="gutter">
           <div className="max-w-6xl mx-auto py-16">
             <p className="eyebrow text-xs font-bold text-red">Your path</p>
-            <h2 className="font-display font-extrabold text-3xl sm:text-4xl mt-2 tracking-tight">Five steps from zero</h2>
-            <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            <h2 className="font-display font-extrabold text-3xl sm:text-4xl mt-2 tracking-tight">Four steps from zero</h2>
+            <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {STEPS.map((s, i) => {
                 const st = PATH_STYLE[i]
                 return (
@@ -119,10 +118,22 @@ export default function Home() {
           </div>
         </section>
 
-        {/* 인사말 */}
-        <section id="greetings" className="gutter">
+        {/* 생활 단어 */}
+        <section id="words" className="gutter">
           <div className="max-w-6xl mx-auto py-16">
-            <Eyebrow n={2} />
+            <PlaceTabs>
+              <Eyebrow n={2} />
+              <h2 className="font-display font-extrabold text-3xl sm:text-4xl mt-2 tracking-tight">Words for real places</h2>
+              <p className="mt-3 text-muted">Learn the words you actually need when you walk into a café, a convenience store, a subway station or a restaurant in Korea.</p>
+            </PlaceTabs>
+            <StepLink n={2} label="Learn everyday words" />
+          </div>
+        </section>
+
+        {/* 인사말 */}
+        <section id="greetings" className="gutter tint-blue border-y border-line">
+          <div className="max-w-6xl mx-auto py-16">
+            <Eyebrow n={3} />
             <h2 className="font-display font-extrabold text-3xl sm:text-4xl mt-2 tracking-tight">Say it like a local</h2>
             <p className="mt-3 text-muted max-w-2xl">
               Korean changes with who you talk to. Each phrase is marked <span className="chip tint-blue text-blue">Polite</span> for strangers and elders, or{' '}
@@ -140,26 +151,14 @@ export default function Home() {
                 </article>
               ))}
             </div>
-            <StepLink n={2} label="All greetings" />
-          </div>
-        </section>
-
-        {/* 생활 단어 */}
-        <section id="words" className="gutter tint-blue border-y border-line">
-          <div className="max-w-6xl mx-auto py-16">
-            <PlaceTabs>
-              <Eyebrow n={3} />
-              <h2 className="font-display font-extrabold text-3xl sm:text-4xl mt-2 tracking-tight">Words for real places</h2>
-              <p className="mt-3 text-muted">Learn the words you actually need when you walk into a café, a convenience store, a subway station or a restaurant in Korea.</p>
-            </PlaceTabs>
-            <StepLink n={3} label="Practice everyday words" />
+            <StepLink n={3} label="Learn basic sentences" />
           </div>
         </section>
 
         {/* K-pop */}
         <section id="kpop" className="gutter">
           <div className="max-w-6xl mx-auto py-16">
-            <Eyebrow n={4} />
+            <p className="eyebrow text-xs font-bold text-red">For K-pop fans · Steps 2–4</p>
             <h2 className="font-display font-extrabold text-3xl sm:text-4xl mt-2 tracking-tight">Understand the songs you love</h2>
             <div className="mt-8 grid gap-6 lg:grid-cols-2">
               <div className="min-w-0">
@@ -193,14 +192,14 @@ export default function Home() {
                 </p>
               </div>
             </div>
-            <StepLink n={4} label="Read lyrics word by word" />
+            <StepLink n={3} label="Read a song line word by word" />
           </div>
         </section>
 
         {/* 문화 */}
         <section id="culture" className="gutter tint-red border-y border-line">
           <div className="max-w-6xl mx-auto py-16">
-            <Eyebrow n={5} />
+            <Eyebrow n={4} />
             <h2 className="font-display font-extrabold text-3xl sm:text-4xl mt-2 tracking-tight">Why Koreans say it that way</h2>
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {CULTURE.map(([ko, title, body]) => (
@@ -211,7 +210,7 @@ export default function Home() {
                 </article>
               ))}
             </div>
-            <StepLink n={5} label="Explore Korean culture" />
+            <StepLink n={4} label="Explore K-Life" />
           </div>
         </section>
 

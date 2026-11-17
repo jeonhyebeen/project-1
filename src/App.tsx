@@ -3,19 +3,17 @@ import { AuthProvider } from './auth'
 import { normalizePath } from './site'
 import Home from './pages/Home'
 import Hangul from './pages/Hangul'
-import Greetings from './pages/Greetings'
+import Sentences from './pages/Sentences'
 import Words from './pages/Words'
-import Kpop from './pages/Kpop'
-import Culture from './pages/Culture'
+import KLife from './pages/KLife'
 import Privacy from './pages/Privacy'
 
 const PAGES: Record<string, () => React.ReactNode> = {
   '/': Home,
   '/hangul/': Hangul,
-  '/greetings/': Greetings,
   '/words/': Words,
-  '/kpop/': Kpop,
-  '/culture/': Culture,
+  '/sentences/': Sentences,
+  '/k-life/': KLife,
   '/privacy/': Privacy,
 }
 

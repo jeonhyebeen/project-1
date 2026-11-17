@@ -1,28 +1,29 @@
 import StepLayout from '../components/StepLayout'
-import { Section, PhraseGrid, DataTable, KoCell, Callout, SayCard, Ko } from '../components/Blocks'
+import { Section, PhraseGrid, DataTable, KoCell, Callout, SayCard, Dialogue, Pattern, LyricLines, Ko } from '../components/Blocks'
 
-export default function Greetings() {
+export default function Sentences() {
   return (
     <StepLayout
-      n={2}
-      heroTint="tint-blue"
-      chips={['입문 Starter', '3 lessons', '18 phrases']}
-      h1={<>Korean Greetings: Hello, Thank You, Sorry &amp; Goodbye</>}
-      lede="Five short phrases cover most of your first day in Korea. Learn which one fits a stranger, a shop owner or a friend, and you will sound polite from the start."
+      n={3}
+      heroTint="tint-red"
+      chips={['초보 Beginner', '5 lessons', '27 sentences']}
+      h1={<>Basic Korean Sentences: Greetings, Polite Speech &amp; Ordering</>}
+      lede="Put your words together. Start with the greetings you will use every day, learn when to be polite or casual, then order at a café and read a song line word by word."
       lessons={[
         { id: 'hello', label: 'Hello & goodbye' },
         { id: 'thanks', label: 'Thank you & sorry' },
         { id: 'levels', label: 'Polite or casual?' },
+        { id: 'asking', label: 'Asking for things' },
+        { id: 'lines', label: 'Read a song line' },
         { label: 'Introduce yourself' },
-        { label: 'On the phone' },
       ]}
-      quizTitle="What do these mean?"
+      quizTitle="What do these sentences mean?"
       quiz={[
         { word: '감사합니다', ask: 'What does this mean?', options: ['Hello', 'Thank you', 'Excuse me', 'Goodbye'], answer: 'Thank you', explain: '감사합니다 is the formal “thank you”.' },
         { word: '안녕히 계세요', ask: 'You are walking out of a café. Who do you say this to?', options: ['The staff who stay', 'A friend who leaves with you', 'Nobody, it means hello', 'Only your teacher'], answer: 'The staff who stay', explain: '계세요 means “stay”, so you say it to the people staying behind.' },
-        { word: '괜찮아요', ask: 'Someone says 미안해요 to you. What does this reply mean?', options: ['Me too', 'It’s okay', 'Thank you', 'See you again'], answer: 'It’s okay', explain: '괜찮아요 means “it’s okay” or “no problem”.' },
         { word: '미안해', ask: 'Who can you say this to?', options: ['Your boss', 'A shop owner', 'A close friend', 'A stranger on the bus'], answer: 'A close friend', explain: 'It has no 요, so it is casual speech for close friends.' },
-        { word: '반가워요', ask: 'What does this mean?', options: ['Nice to meet you', 'Excuse me', 'I’m sorry', 'Good night'], answer: 'Nice to meet you', explain: '반가워요 is what you say when meeting someone new.' },
+        { word: '물 주세요', ask: 'What does this mean?', options: ['Water, please', 'Coffee, please', 'More, please', 'This one, please'], answer: 'Water, please', explain: '물 is water, and 주세요 means “please give me”.' },
+        { word: '얼마예요?', ask: 'What are you asking?', options: ['Where is it?', 'How much is it?', 'Is it hot?', 'Can I pay by card?'], answer: 'How much is it?', explain: '얼마 means “how much”.' },
       ]}
     >
       <Section id="hello" eyebrow="Lesson 1" title="Hello & goodbye" ko="만남과 헤어짐" audio
@@ -73,6 +74,40 @@ export default function Greetings() {
         <Callout title="Tip: listen for “-요”">
           If a sentence ends in <Ko>요</Ko>, it is polite. If you drop the 요 with someone older, it can sound rude, so wait until they say{' '}
           <Ko>말 놓으세요</Ko> <span className="text-muted">(mal noeuseyo, “speak casually with me”)</span>.
+        </Callout>
+      </Section>
+
+      <Section id="asking" eyebrow="Lesson 4" title="Asking for things" ko="주문하기" audio
+        intro="One pattern gets you almost anything in a café, store or restaurant. Take a word from step 2 and add 주세요.">
+        <Pattern formula="[thing] + 주세요 = “___, please”" examples={[
+          ['물 주세요', 'mul juseyo', 'Water, please'],
+          ['이거 주세요', 'igeo juseyo', 'This one, please'],
+          ['영수증 주세요', 'yeongsujeung juseyo', 'Receipt, please'],
+          ['하나 더 주세요', 'hana deo juseyo', 'One more, please'],
+        ]} />
+        <Dialogue title="Listen to a café order" lines={[
+          { who: 'Staff', ko: '어서 오세요.', ro: 'eoseo oseyo', en: 'Welcome.' },
+          { who: 'You', ko: '아이스 아메리카노 하나 주세요.', ro: 'aiseu amerikano hana juseyo', en: 'One iced americano, please.', me: true },
+          { who: 'Staff', ko: '드시고 가세요?', ro: 'deusigo gaseyo?', en: 'For here?' },
+          { who: 'You', ko: '아니요, 포장이요.', ro: 'aniyo, pojang-iyo', en: 'No, to go.', me: true },
+          { who: 'Staff', ko: '사천오백 원입니다.', ro: 'sacheon-obaek wonimnida', en: 'That’s 4,500 won.' },
+        ]} />
+        <PhraseGrid items={[
+          { ko: '얼마예요?', ro: 'eolmayeyo?', en: 'How much is it?', reg: 'Polite' },
+          { ko: '카드 돼요?', ro: 'kadeu dwaeyo?', en: 'Can I pay by card?', note: 'Almost always yes. Cards work everywhere.', reg: 'Polite' },
+          { ko: '봉투 필요하세요?', ro: 'bongtu piryohaseyo?', en: 'Do you need a bag?', note: <>Answer <Ko className="font-hangul">네</Ko> (yes) or <Ko className="font-hangul">괜찮아요</Ko> (no thanks).</> },
+          { ko: '이번 역은 시청역입니다', ro: 'ibeon yeogeun sicheong-yeogimnida', en: 'This stop is City Hall', note: 'The subway announcement you hear before every station.' },
+        ]} />
+      </Section>
+
+      <Section id="lines" eyebrow="Lesson 5" title="Read a song line, word by word" ko="한 줄 읽기" audio
+        intro="Songs use casual speech, as if talking to someone close. Each colored word below matches its meaning underneath. These are example lines written for this lesson.">
+        <LyricLines lines={[
+          { tokens: [['너를', 'you (the one I…)'], ['보고', 'see'], ['싶어', 'want to'], ['오늘 밤', 'tonight']], ro: 'neoreul bogo sipeo oneul bam', en: 'I want to see you tonight' },
+          { tokens: [['우리', 'our'], ['꿈은', 'dream (is)'], ['영원히', 'forever'], ['빛나', 'shines']], ro: 'uri kkumeun yeongwonhi binna', en: 'Our dream shines forever' },
+        ]} />
+        <Callout title="Grammar spotted: little tags after nouns">
+          <Ko>를</Ko> marks what you see or love, and <Ko>은</Ko> marks the topic. English uses word order for this. Korean uses these small tags, so singers can move words around to fit the melody.
         </Callout>
       </Section>
     </StepLayout>

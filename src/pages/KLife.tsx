@@ -1,19 +1,20 @@
 import StepLayout from '../components/StepLayout'
 import { Section, PhraseGrid, InfoCards, DoDont, SayCard, Callout, Ko } from '../components/Blocks'
 
-export default function Culture() {
+export default function KLife() {
   return (
     <StepLayout
-      n={5}
+      n={4}
       heroTint="tint-yellow"
-      chips={['초보 Beginner', '4 lessons', 'Final step']}
-      h1={<>Korean Culture Basics: Honorifics, Holidays &amp; Table Manners</>}
-      lede="Language and manners go together in Korea. Learn how to address people, what happens on the big holidays and how to behave at a shared meal."
+      chips={['초보 Beginner', '5 lessons', 'Final step']}
+      h1={<>K-Life: Korean Culture, Manners &amp; K-pop Fan Talk</>}
+      lede="Language and life go together in Korea. Learn how to address people, what happens on the big holidays, how to behave at a shared meal and the words K-pop fans use every day."
       lessons={[
         { id: 'titles', label: 'Names & titles' },
         { id: 'holidays', label: 'Holidays' },
         { id: 'table', label: 'Table manners' },
         { id: 'daily', label: 'Daily life' },
+        { id: 'fan-talk', label: 'K-pop fan talk' },
       ]}
       quizTitle="Culture check"
       quiz={[
@@ -21,6 +22,7 @@ export default function Culture() {
         { word: '추석', ask: 'What is this holiday?', options: ['Lunar New Year', 'Harvest festival', 'Hangul Day', 'Pepero Day'], answer: 'Harvest festival', explain: '추석 is Chuseok, the autumn harvest festival.' },
         { word: '씨', ask: 'Where should this title go?', options: ['After your own name', 'After a coworker’s name', 'After your grandmother’s name', 'Before any name'], answer: 'After a coworker’s name', explain: '씨 is polite, but never for yourself or much older people.' },
         { word: '젓가락', ask: 'What should you never do with chopsticks?', options: ['Rest them on the table', 'Use them for side dishes', 'Stick them upright in rice', 'Hold them in your right hand'], answer: 'Stick them upright in rice', explain: 'It looks like a funeral offering.' },
+        { word: '막내', ask: 'Who is this in a K-pop group?', options: ['The leader', 'The oldest member', 'The youngest member', 'The main dancer'], answer: 'The youngest member', explain: '막내 is the youngest, in groups and in families.' },
         { word: '세배', ask: 'What is this?', options: ['A New Year’s bow to elders', 'Rice cake soup', 'A birthday song', 'A family card game'], answer: 'A New Year’s bow to elders', explain: 'Children do 세배 on Seollal and get 세뱃돈 (money) in return.' },
       ]}
     >
@@ -75,6 +77,18 @@ export default function Culture() {
           { ko: '빨리빨리', ro: 'ppalli-ppalli', title: '“Quick, quick!”', body: 'Fast delivery, fast internet, fast service. Speed is part of daily life.' },
           { ko: '배달', ro: 'baedal', title: 'Delivery, anytime', body: 'Food arrives almost anywhere, even to a park bench along the Han River.' },
           { ko: '만 나이', ro: 'man nai', title: 'Age, the international way', body: 'Since 2023, official age is counted like everywhere else. Older people may still use the traditional count.' },
+        ]} />
+      </Section>
+
+      <Section id="fan-talk" eyebrow="Lesson 5" title="K-pop fan talk" ko="팬 용어"
+        intro="Words you will see in comments, livestreams and fan cafés. Many of them come from family life in Korea.">
+        <InfoCards items={[
+          { ko: '최애', ro: 'choeae', title: 'Favorite member (bias)', body: 'Short for 최고로 애정하는, “loved the most”.' },
+          { ko: '막내', ro: 'maknae', title: 'Youngest member', body: 'Used in families too. The 막내 is often teased and protected.' },
+          { ko: '컴백', ro: 'keombaek', title: 'Comeback', body: 'Any new release, even if the group never went away.' },
+          { ko: '오빠 · 언니', ro: 'oppa · eonni', title: 'Older brother · older sister', body: 'What women call older men and women. Men say 형 (hyeong) and 누나 (nuna).' },
+          { ko: '대박', ro: 'daebak', title: 'Awesome! / Jackpot!', body: 'Big surprise, good or shocking. Very casual.' },
+          { ko: '화이팅', ro: 'hwaiting', title: 'You can do it!', body: 'From English “fighting”. Cheer for anyone before a big moment.' },
         ]} />
       </Section>
     </StepLayout>
