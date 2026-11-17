@@ -1,0 +1,497 @@
+<title>HangulEasy 메인 시안</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Jua&family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          bg: 'var(--bg)', surface: 'var(--surface)', ink: 'var(--ink)', muted: 'var(--muted)', line: 'var(--line)',
+          blue: 'var(--blue)', red: 'var(--red)', yellow: 'var(--yellow)', onyellow: 'var(--on-yellow)'
+        },
+        fontFamily: {
+          display: ['"Bricolage Grotesque"', 'Jua', '"Noto Sans KR"', 'system-ui', 'sans-serif'],
+          hangul: ['Jua', '"Noto Sans KR"', 'system-ui', 'sans-serif'],
+          sans: ['"Noto Sans KR"', '"Apple SD Gothic Neo"', '"Malgun Gothic"', 'system-ui', 'sans-serif']
+        }
+      }
+    }
+  }
+</script>
+<style>
+  /* Layout: 오방색(청·적·황)으로 밝게. 히어로에서 직접 글자를 조립해 보는 블록 → 학습 순서 → 글자표 → 인사말 → 생활 단어 → K-pop 표현 → 문화 */
+  :root {
+    --bg: #FFFDF8;
+    --surface: #FFFFFF;
+    --ink: #16171D;
+    --muted: #5A5D6A;
+    --line: #E9E4D8;
+    --blue: #1E5AD7;      /* 청 */
+    --red: #EC4130;       /* 적 */
+    --yellow: #FFC21A;    /* 황 */
+    --on-yellow: #16171D;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121318; --surface: #1B1D25; --ink: #F5F3EE; --muted: #A4A7B4; --line: #2C2F3B;
+      --blue: #6E9BFF; --red: #FF6E5E; --yellow: #FFCB3D; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #121318; --surface: #1B1D25; --ink: #F5F3EE; --muted: #A4A7B4; --line: #2C2F3B;
+    --blue: #6E9BFF; --red: #FF6E5E; --yellow: #FFCB3D; color-scheme: dark;
+  }
+  body { background: var(--bg); color: var(--ink); font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif; line-height: 1.6; }
+  .gutter { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  h1, h2, h3 { text-wrap: balance; }
+  .eyebrow { letter-spacing: .12em; text-transform: uppercase; }
+  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
+  .site-header { top: env(safe-area-inset-top, 0px); }
+  .tint-blue { background: color-mix(in oklab, var(--blue) 12%, var(--surface)); }
+  .tint-red { background: color-mix(in oklab, var(--red) 12%, var(--surface)); }
+  .tint-yellow { background: color-mix(in oklab, var(--yellow) 22%, var(--surface)); }
+  button:focus-visible, a:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; border-radius: 10px; }
+
+  /* 글자 조립 블록 */
+  .jamo { min-width: 2.6rem; height: 2.6rem; border-radius: 12px; border: 2px solid var(--line); background: var(--surface); font-family: Jua, "Noto Sans KR", sans-serif; font-size: 1.35rem; color: var(--ink); transition: transform .12s ease, background .12s ease, border-color .12s ease; }
+  .jamo:hover { transform: translateY(-2px); border-color: var(--ink); }
+  .jamo[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .jamo.small { font-size: .85rem; font-family: "Noto Sans KR", sans-serif; font-weight: 700; padding: 0 .6rem; }
+  .block { width: 9.5rem; height: 9.5rem; border: 3px solid var(--ink); border-radius: 18px; display: grid; gap: 4px; padding: 6px; background: var(--surface); }
+  .block.vertical { grid-template: "i v" 1fr "f f" .8fr / 1fr 1fr; }
+  .block.horizontal { grid-template: "i" 1fr "v" .7fr "f" .8fr / 1fr; }
+  .block.nofinal.vertical { grid-template: "i v" 1fr / 1fr 1fr; }
+  .block.nofinal.horizontal { grid-template: "i" 1fr "v" .8fr / 1fr; }
+  .slot { border-radius: 10px; display: grid; place-items: center; font-family: Jua, "Noto Sans KR", sans-serif; font-size: 2rem; color: var(--on-yellow); }
+  .slot-i { grid-area: i; background: var(--yellow); }
+  .slot-v { grid-area: v; background: color-mix(in oklab, var(--blue) 30%, var(--surface)); color: var(--ink); }
+  .slot-f { grid-area: f; background: color-mix(in oklab, var(--red) 28%, var(--surface)); color: var(--ink); }
+  .pop { animation: pop .28s ease; }
+  @keyframes pop { 0% { transform: scale(.85); } 70% { transform: scale(1.06); } 100% { transform: scale(1); } }
+
+  .letter { border: 2px solid var(--line); border-radius: 14px; background: var(--surface); padding: .6rem .3rem; text-align: center; transition: transform .12s ease, border-color .12s ease; }
+  .letter:hover { transform: translateY(-3px); border-color: var(--ink); }
+  .tab[aria-selected="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .chip { font-size: .72rem; font-weight: 700; padding: .15rem .55rem; border-radius: 999px; white-space: nowrap; }
+  .squiggle { text-decoration: underline wavy var(--red); text-decoration-thickness: 3px; text-underline-offset: 8px; }
+  @media (prefers-reduced-motion: reduce) {
+    .pop { animation: none; }
+    .jamo, .letter { transition: none; }
+    .jamo:hover, .letter:hover { transform: none; }
+  }
+</style>
+
+<!-- 헤더 -->
+<header class="site-header sticky z-20 bg-bg border-b border-line gutter">
+  <div class="max-w-6xl mx-auto flex items-center justify-between gap-4 py-3">
+    <a href="#top" class="flex items-center gap-2 text-ink">
+      <span class="grid grid-cols-3 gap-0.5" aria-hidden="true">
+        <span class="w-2.5 h-2.5 rounded-sm bg-blue"></span><span class="w-2.5 h-2.5 rounded-sm bg-red"></span><span class="w-2.5 h-2.5 rounded-sm bg-yellow"></span>
+      </span>
+      <span class="font-display text-xl font-extrabold tracking-tight">Hangul<span class="text-blue">Easy</span></span>
+    </a>
+    <nav aria-label="Main" class="flex items-center gap-4 sm:gap-6 text-sm font-medium">
+      <a href="#letters" class="hover:text-blue hidden sm:inline">Hangul</a>
+      <a href="#greetings" class="hover:text-blue hidden md:inline">Greetings</a>
+      <a href="#words" class="hover:text-blue hidden md:inline">Words</a>
+      <a href="#kpop" class="hover:text-blue">K-pop</a>
+      <a href="#culture" class="hover:text-blue hidden sm:inline">Culture</a>
+      <a href="#path" class="rounded-full bg-ink text-bg px-4 py-1.5 font-bold">Start free</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <!-- 히어로: 글자 조립 -->
+  <section class="gutter border-b border-line">
+    <div class="max-w-6xl mx-auto py-12 sm:py-16 grid gap-10 lg:grid-cols-[1.05fr_1fr] lg:items-center">
+      <div class="min-w-0">
+        <p class="inline-flex items-center gap-2 rounded-full tint-yellow px-3 py-1 text-xs font-bold">
+          <span class="w-2 h-2 rounded-full bg-red"></span> For total beginners · 입문 · 초보
+        </p>
+        <h1 class="font-display font-extrabold text-4xl sm:text-5xl leading-[1.1] mt-5 tracking-tight">
+          Learn the Korean Alphabet <span class="text-blue">(Hangul)</span> for Beginners &amp; <span class="squiggle">Korean Culture</span>
+        </h1>
+        <p class="mt-5 max-w-xl text-lg text-muted">
+          Hangul was designed to be learned fast. Start with 14 consonants and 10 vowels, then move on to greetings, everyday words, song lyrics and Korean culture.
+        </p>
+        <div class="mt-7 flex flex-wrap gap-3">
+          <a href="#path" class="rounded-full bg-red px-6 py-3 font-bold" style="color:#fff">Start lesson 1</a>
+          <a href="#letters" class="rounded-full border-2 border-ink px-6 py-3 font-bold">See all letters</a>
+        </div>
+        <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted">
+          <li>✓ No sign-up to start</li>
+          <li>✓ Audio for every word</li>
+          <li>✓ Romanization included</li>
+        </ul>
+      </div>
+
+      <!-- 글자 조립기 -->
+      <div class="min-w-0 rounded-3xl border-2 border-ink bg-surface p-5 sm:p-6" style="box-shadow: 8px 8px 0 var(--yellow)">
+        <div class="flex items-center justify-between gap-3">
+          <p class="font-bold">Build a syllable</p>
+          <p class="text-xs text-muted">Tap the letters</p>
+        </div>
+        <div class="mt-4 flex flex-wrap items-center gap-5">
+          <div id="block" class="block vertical" aria-hidden="true">
+            <span class="slot slot-i" id="slot-i">ㅎ</span>
+            <span class="slot slot-v" id="slot-v">ㅏ</span>
+            <span class="slot slot-f" id="slot-f">ㄴ</span>
+          </div>
+          <div class="flex flex-col gap-1">
+            <span class="text-6xl font-hangul leading-none" id="syllable" aria-live="polite">한</span>
+            <span class="text-lg font-bold text-blue" id="roman">han</span>
+            <button id="speak" type="button" class="mt-2 self-start rounded-full tint-blue px-3 py-1 text-sm font-bold" hidden>▶ Listen</button>
+          </div>
+        </div>
+        <p class="mt-4 text-sm text-muted" id="rule">Vertical vowels like ㅏ go on the <b class="text-ink">right</b> of the first consonant.</p>
+
+        <div class="mt-5 space-y-3">
+          <div>
+            <p class="text-xs font-bold text-muted mb-1.5">1 · First consonant <span class="font-normal">(초성)</span></p>
+            <div class="flex flex-wrap gap-1.5" id="pick-i"></div>
+          </div>
+          <div>
+            <p class="text-xs font-bold text-muted mb-1.5">2 · Vowel <span class="font-normal">(중성)</span></p>
+            <div class="flex flex-wrap gap-1.5" id="pick-v"></div>
+          </div>
+          <div>
+            <p class="text-xs font-bold text-muted mb-1.5">3 · Final consonant <span class="font-normal">(받침, optional)</span></p>
+            <div class="flex flex-wrap gap-1.5" id="pick-f"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 학습 순서 -->
+  <section id="path" class="gutter">
+    <div class="max-w-6xl mx-auto py-16">
+      <p class="eyebrow text-xs font-bold text-red">Your path</p>
+      <h2 class="font-display font-extrabold text-3xl sm:text-4xl mt-2 tracking-tight">Five steps from zero</h2>
+      <ol class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <li class="rounded-2xl p-5 bg-yellow" style="color:var(--on-yellow)">
+          <div class="flex items-center justify-between"><span class="font-display font-extrabold text-3xl">1</span><span class="chip bg-surface text-ink">입문 Starter</span></div>
+          <h3 class="font-bold text-lg mt-6">Hangul letters</h3>
+          <p class="text-sm mt-1 opacity-80">ㄱ ㄴ ㄷ, ㅏ ㅓ ㅗ, how blocks and 받침 work.</p>
+        </li>
+        <li class="rounded-2xl p-5 tint-blue">
+          <div class="flex items-center justify-between"><span class="font-display font-extrabold text-3xl text-blue">2</span><span class="chip bg-surface">입문 Starter</span></div>
+          <h3 class="font-bold text-lg mt-6">Greetings</h3>
+          <p class="text-sm mt-1 text-muted">Hello, thank you, sorry, goodbye. Polite and casual.</p>
+        </li>
+        <li class="rounded-2xl p-5 tint-red">
+          <div class="flex items-center justify-between"><span class="font-display font-extrabold text-3xl text-red">3</span><span class="chip bg-surface">초보 Beginner</span></div>
+          <h3 class="font-bold text-lg mt-6">Everyday words</h3>
+          <p class="text-sm mt-1 text-muted">Ordering coffee, riding the subway, paying at a store.</p>
+        </li>
+        <li class="rounded-2xl p-5 tint-blue">
+          <div class="flex items-center justify-between"><span class="font-display font-extrabold text-3xl text-blue">4</span><span class="chip bg-surface">초보 Beginner</span></div>
+          <h3 class="font-bold text-lg mt-6">K-pop phrases</h3>
+          <p class="text-sm mt-1 text-muted">Words you hear in songs, explained line by line.</p>
+        </li>
+        <li class="rounded-2xl p-5 tint-red">
+          <div class="flex items-center justify-between"><span class="font-display font-extrabold text-3xl text-red">5</span><span class="chip bg-surface">초보 Beginner</span></div>
+          <h3 class="font-bold text-lg mt-6">Korean culture</h3>
+          <p class="text-sm mt-1 text-muted">Honorifics, holidays, table manners, daily life.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 글자표 -->
+  <section id="letters" class="gutter tint-yellow border-y border-line">
+    <div class="max-w-6xl mx-auto py-16">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="eyebrow text-xs font-bold text-red">Step 1 · Hangul</p>
+          <h2 class="font-display font-extrabold text-3xl sm:text-4xl mt-2 tracking-tight">24 letters. That's the whole alphabet.</h2>
+        </div>
+        <p class="text-sm text-muted" id="letters-hint">Tap a letter to hear it.</p>
+      </div>
+      <h3 class="mt-8 font-bold">Consonants <span class="font-hangul font-normal text-muted">자음</span></h3>
+      <div class="mt-3 grid grid-cols-4 sm:grid-cols-7 gap-2" id="consonants"></div>
+      <h3 class="mt-8 font-bold">Vowels <span class="font-hangul font-normal text-muted">모음</span></h3>
+      <div class="mt-3 grid grid-cols-5 sm:grid-cols-10 gap-2" id="vowels"></div>
+    </div>
+  </section>
+
+  <!-- 인사말 -->
+  <section id="greetings" class="gutter">
+    <div class="max-w-6xl mx-auto py-16">
+      <p class="eyebrow text-xs font-bold text-red">Step 2 · Greetings</p>
+      <h2 class="font-display font-extrabold text-3xl sm:text-4xl mt-2 tracking-tight">Say it like a local</h2>
+      <p class="mt-3 text-muted max-w-2xl">Korean changes with who you talk to. Each phrase is marked <span class="chip tint-blue text-blue">Polite</span> for strangers and elders, or <span class="chip tint-red text-red">Casual</span> for close friends.</p>
+      <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <article class="rounded-2xl border-2 border-line bg-surface p-5">
+          <div class="flex items-start justify-between gap-3"><p class="font-hangul text-3xl">안녕하세요</p><span class="chip tint-blue text-blue">Polite</span></div>
+          <p class="text-blue font-bold mt-1">annyeonghaseyo</p>
+          <p class="mt-2"><b>Hello</b>. Works any time of day, with anyone.</p>
+        </article>
+        <article class="rounded-2xl border-2 border-line bg-surface p-5">
+          <div class="flex items-start justify-between gap-3"><p class="font-hangul text-3xl">감사합니다</p><span class="chip tint-blue text-blue">Polite</span></div>
+          <p class="text-blue font-bold mt-1">gamsahamnida</p>
+          <p class="mt-2"><b>Thank you</b>. Use with shop staff, teachers, strangers.</p>
+        </article>
+        <article class="rounded-2xl border-2 border-line bg-surface p-5">
+          <div class="flex items-start justify-between gap-3"><p class="font-hangul text-3xl">고마워</p><span class="chip tint-red text-red">Casual</span></div>
+          <p class="text-blue font-bold mt-1">gomawo</p>
+          <p class="mt-2"><b>Thanks</b>. Only with friends or younger people.</p>
+        </article>
+        <article class="rounded-2xl border-2 border-line bg-surface p-5">
+          <div class="flex items-start justify-between gap-3"><p class="font-hangul text-3xl">죄송합니다</p><span class="chip tint-blue text-blue">Polite</span></div>
+          <p class="text-blue font-bold mt-1">joesonghamnida</p>
+          <p class="mt-2"><b>I'm sorry</b>. A formal apology.</p>
+        </article>
+        <article class="rounded-2xl border-2 border-line bg-surface p-5">
+          <div class="flex items-start justify-between gap-3"><p class="font-hangul text-3xl">안녕히 가세요</p><span class="chip tint-blue text-blue">Polite</span></div>
+          <p class="text-blue font-bold mt-1">annyeonghi gaseyo</p>
+          <p class="mt-2"><b>Goodbye</b>, said to the person who is <b>leaving</b>.</p>
+        </article>
+        <article class="rounded-2xl border-2 border-line bg-surface p-5">
+          <div class="flex items-start justify-between gap-3"><p class="font-hangul text-3xl">안녕히 계세요</p><span class="chip tint-blue text-blue">Polite</span></div>
+          <p class="text-blue font-bold mt-1">annyeonghi gyeseyo</p>
+          <p class="mt-2"><b>Goodbye</b>, said when <b>you</b> leave and they stay.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 생활 단어 -->
+  <section id="words" class="gutter tint-blue border-y border-line">
+    <div class="max-w-6xl mx-auto py-16 grid gap-8 lg:grid-cols-[1fr_1.6fr]">
+      <div class="min-w-0">
+        <p class="eyebrow text-xs font-bold text-red">Step 3 · Everyday words</p>
+        <h2 class="font-display font-extrabold text-3xl sm:text-4xl mt-2 tracking-tight">Words for real places</h2>
+        <p class="mt-3 text-muted">Learn the words you actually need when you walk into a café, a convenience store, a subway station or a restaurant in Korea.</p>
+        <div class="mt-6 flex flex-wrap gap-2" role="tablist" aria-label="Places" id="tabs"></div>
+      </div>
+      <ul class="min-w-0 rounded-2xl bg-surface border-2 border-ink divide-y divide-[color:var(--line)]" id="word-list" aria-live="polite"></ul>
+    </div>
+  </section>
+
+  <!-- K-pop -->
+  <section id="kpop" class="gutter">
+    <div class="max-w-6xl mx-auto py-16">
+      <p class="eyebrow text-xs font-bold text-red">Step 4 · K-pop</p>
+      <h2 class="font-display font-extrabold text-3xl sm:text-4xl mt-2 tracking-tight">Understand the songs you love</h2>
+      <div class="mt-8 grid gap-6 lg:grid-cols-2">
+        <div class="min-w-0">
+          <h3 class="font-bold">Words you'll hear again and again</h3>
+          <div class="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div class="rounded-xl bg-yellow p-3" style="color:var(--on-yellow)"><p class="font-hangul text-2xl">사랑해</p><p class="text-xs font-bold">saranghae</p><p class="text-sm">I love you</p></div>
+            <div class="rounded-xl tint-red p-3"><p class="font-hangul text-2xl">보고 싶어</p><p class="text-xs font-bold text-red">bogo sipeo</p><p class="text-sm">I miss you</p></div>
+            <div class="rounded-xl tint-blue p-3"><p class="font-hangul text-2xl">같이</p><p class="text-xs font-bold text-blue">gachi</p><p class="text-sm">together</p></div>
+            <div class="rounded-xl tint-yellow p-3"><p class="font-hangul text-2xl">꿈</p><p class="text-xs font-bold">kkum</p><p class="text-sm">dream</p></div>
+            <div class="rounded-xl tint-blue p-3"><p class="font-hangul text-2xl">오늘 밤</p><p class="text-xs font-bold text-blue">oneul bam</p><p class="text-sm">tonight</p></div>
+            <div class="rounded-xl tint-yellow p-3"><p class="font-hangul text-2xl">심장</p><p class="text-xs font-bold">simjang</p><p class="text-sm">heart</p></div>
+            <div class="rounded-xl bg-red p-3" style="color:#fff"><p class="font-hangul text-2xl">화이팅</p><p class="text-xs font-bold">hwaiting</p><p class="text-sm">You can do it!</p></div>
+            <div class="rounded-xl tint-red p-3"><p class="font-hangul text-2xl">대박</p><p class="text-xs font-bold text-red">daebak</p><p class="text-sm">Awesome!</p></div>
+          </div>
+        </div>
+        <div class="min-w-0 rounded-3xl border-2 border-ink bg-surface p-5 sm:p-6" style="box-shadow: 8px 8px 0 var(--blue)">
+          <div class="flex items-center justify-between gap-3">
+            <p class="font-bold">Song lesson preview</p>
+            <span class="chip tint-red text-red">Example line</span>
+          </div>
+          <p class="mt-4 font-hangul text-3xl sm:text-4xl">우리 같이 걸어요</p>
+          <p class="text-blue font-bold">uri gachi georeoyo</p>
+          <p class="mt-1 text-muted">“Let's walk together.”</p>
+          <ul class="mt-5 grid grid-cols-3 gap-2 text-center">
+            <li class="rounded-xl tint-yellow p-2"><p class="font-hangul text-xl">우리</p><p class="text-xs text-muted">we</p></li>
+            <li class="rounded-xl tint-blue p-2"><p class="font-hangul text-xl">같이</p><p class="text-xs text-muted">together</p></li>
+            <li class="rounded-xl tint-red p-2"><p class="font-hangul text-xl">걸어요</p><p class="text-xs text-muted">walk (polite)</p></li>
+          </ul>
+          <p class="mt-5 text-sm"><b>Grammar tip:</b> <span class="font-hangul">-요</span> at the end makes a sentence polite. Songs often drop it to sound closer: <span class="font-hangul">걸어</span>.</p>
+          <p class="mt-4 text-xs text-muted">Each song lesson: line-by-line translation, key words, and one grammar point.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 문화 -->
+  <section id="culture" class="gutter tint-red border-y border-line">
+    <div class="max-w-6xl mx-auto py-16">
+      <p class="eyebrow text-xs font-bold text-red">Step 5 · Culture</p>
+      <h2 class="font-display font-extrabold text-3xl sm:text-4xl mt-2 tracking-tight">Why Koreans say it that way</h2>
+      <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <article class="rounded-2xl bg-surface p-5 border-2 border-line">
+          <p class="font-hangul text-2xl text-blue">존댓말</p>
+          <h3 class="font-bold mt-1">Honorifics</h3>
+          <p class="text-sm text-muted mt-1">Speak politely to elders and strangers. Switch to casual only when invited.</p>
+        </article>
+        <article class="rounded-2xl bg-surface p-5 border-2 border-line">
+          <p class="font-hangul text-2xl text-blue">밥 먹었어요?</p>
+          <h3 class="font-bold mt-1">“Did you eat?”</h3>
+          <p class="text-sm text-muted mt-1">A friendly way to ask how someone is doing, not a lunch invite.</p>
+        </article>
+        <article class="rounded-2xl bg-surface p-5 border-2 border-line">
+          <p class="font-hangul text-2xl text-blue">설날 · 추석</p>
+          <h3 class="font-bold mt-1">The two big holidays</h3>
+          <p class="text-sm text-muted mt-1">Lunar New Year and the autumn harvest festival. Families gather and share food.</p>
+        </article>
+        <article class="rounded-2xl bg-surface p-5 border-2 border-line">
+          <p class="font-hangul text-2xl text-blue">두 손으로</p>
+          <h3 class="font-bold mt-1">Use two hands</h3>
+          <p class="text-sm text-muted mt-1">Give and receive things, and pour drinks for elders, with both hands.</p>
+        </article>
+        <article class="rounded-2xl bg-surface p-5 border-2 border-line">
+          <p class="font-hangul text-2xl text-blue">빨리빨리</p>
+          <h3 class="font-bold mt-1">“Hurry, hurry”</h3>
+          <p class="text-sm text-muted mt-1">Fast delivery, fast internet, fast everything. A word you'll hear daily.</p>
+        </article>
+        <article class="rounded-2xl bg-surface p-5 border-2 border-line">
+          <p class="font-hangul text-2xl text-blue">신발 벗기</p>
+          <h3 class="font-bold mt-1">Shoes off</h3>
+          <p class="text-sm text-muted mt-1">Take your shoes off at home and in many traditional restaurants.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="gutter">
+    <div class="max-w-6xl mx-auto py-16">
+      <div class="rounded-3xl bg-yellow p-8 sm:p-12 flex flex-wrap items-center justify-between gap-6" style="color:var(--on-yellow)">
+        <div>
+          <p class="font-hangul text-5xl sm:text-6xl">시작해 볼까요?</p>
+          <p class="mt-2 font-bold">sijakhae bolkkayo? · Shall we start?</p>
+        </div>
+        <a href="#path" class="rounded-full px-7 py-3.5 font-bold text-lg" style="background:var(--on-yellow);color:#FFFDF8">Start with ㄱ →</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="gutter border-t border-line">
+  <div class="max-w-6xl mx-auto py-10 flex flex-wrap justify-between gap-6 text-sm text-muted">
+    <div>
+      <p class="font-display font-extrabold text-lg text-ink">Hangul<span class="text-blue">Easy</span></p>
+      <p class="mt-1">Korean for beginners · 메인 페이지 시안</p>
+    </div>
+    <div class="flex flex-wrap gap-x-6 gap-y-1">
+      <a href="#letters" class="hover:text-ink">Hangul</a><a href="#greetings" class="hover:text-ink">Greetings</a><a href="#words" class="hover:text-ink">Words</a><a href="#kpop" class="hover:text-ink">K-pop</a><a href="#culture" class="hover:text-ink">Culture</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  // 유니코드 한글 조합: 0xAC00 + (초성*21 + 중성)*28 + 종성
+  const INITIALS = [['ㄱ',0,'g'],['ㄴ',2,'n'],['ㄷ',3,'d'],['ㄹ',5,'r'],['ㅁ',6,'m'],['ㅂ',7,'b'],['ㅅ',9,'s'],['ㅇ',11,''],['ㅈ',12,'j'],['ㅊ',14,'ch'],['ㅋ',15,'k'],['ㅌ',16,'t'],['ㅍ',17,'p'],['ㅎ',18,'h']];
+  const VOWELS = [['ㅏ',0,'a','v'],['ㅑ',2,'ya','v'],['ㅓ',4,'eo','v'],['ㅕ',6,'yeo','v'],['ㅗ',8,'o','h'],['ㅛ',12,'yo','h'],['ㅜ',13,'u','h'],['ㅠ',17,'yu','h'],['ㅡ',18,'eu','h'],['ㅣ',20,'i','v']];
+  const FINALS = [['none',0,''],['ㄱ',1,'k'],['ㄴ',4,'n'],['ㄹ',8,'l'],['ㅁ',16,'m'],['ㅂ',17,'p'],['ㅇ',21,'ng']];
+  const LETTER_NAMES = { 'ㄱ':'giyeok','ㄴ':'nieun','ㄷ':'digeut','ㄹ':'rieul','ㅁ':'mieum','ㅂ':'bieup','ㅅ':'siot','ㅇ':'ieung','ㅈ':'jieut','ㅊ':'chieut','ㅋ':'kieuk','ㅌ':'tieut','ㅍ':'pieup','ㅎ':'hieut' };
+  const LETTER_SAY = { 'ㄱ':'기역','ㄴ':'니은','ㄷ':'디귿','ㄹ':'리을','ㅁ':'미음','ㅂ':'비읍','ㅅ':'시옷','ㅇ':'이응','ㅈ':'지읒','ㅊ':'치읓','ㅋ':'키읔','ㅌ':'티읕','ㅍ':'피읖','ㅎ':'히읗' };
+  const VOWEL_SAY = { 'ㅏ':'아','ㅑ':'야','ㅓ':'어','ㅕ':'여','ㅗ':'오','ㅛ':'요','ㅜ':'우','ㅠ':'유','ㅡ':'으','ㅣ':'이' };
+
+  const state = { i: 13, v: 0, f: 2 };  // 한
+  const $ = (id) => document.getElementById(id);
+
+  // 음성: 브라우저가 지원할 때만 버튼을 보여 줍니다.
+  const canSpeak = 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined';
+  function say(text) {
+    if (!canSpeak) return;
+    try {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'ko-KR'; u.rate = 0.8;
+      speechSynthesis.speak(u);
+    } catch (e) {}
+  }
+  if (canSpeak) $('speak').hidden = false;
+  else $('letters-hint').textContent = 'Audio plays on the real site.';
+
+  function makePicker(el, list, key) {
+    list.forEach((item, idx) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'jamo' + (item[0] === 'none' ? ' small' : '');
+      b.textContent = item[0] === 'none' ? 'None' : item[0];
+      b.setAttribute('aria-pressed', String(state[key] === idx));
+      b.setAttribute('aria-label', key === 'f' && item[0] === 'none' ? 'No final consonant' : item[0]);
+      b.addEventListener('click', () => {
+        state[key] = idx;
+        el.querySelectorAll('button').forEach((x, j) => x.setAttribute('aria-pressed', String(j === idx)));
+        render(true);
+      });
+      el.appendChild(b);
+    });
+  }
+
+  function render(animate) {
+    const I = INITIALS[state.i], V = VOWELS[state.v], F = FINALS[state.f];
+    const code = 0xAC00 + (I[1] * 21 + V[1]) * 28 + F[1];
+    const syl = String.fromCharCode(code);
+    $('syllable').textContent = syl;
+    $('roman').textContent = (I[2] + V[2] + F[2]) || V[2];
+    $('slot-i').textContent = I[0];
+    $('slot-v').textContent = V[0];
+    $('slot-f').textContent = F[0] === 'none' ? '' : F[0];
+    $('slot-f').hidden = F[0] === 'none';
+    const block = $('block');
+    block.className = 'block ' + (V[3] === 'v' ? 'vertical' : 'horizontal') + (F[0] === 'none' ? ' nofinal' : '');
+    $('rule').innerHTML = V[3] === 'v'
+      ? 'Vertical vowels like ' + V[0] + ' go on the <b class="text-ink">right</b> of the first consonant.'
+      : 'Horizontal vowels like ' + V[0] + ' go <b class="text-ink">under</b> the first consonant.';
+    if (F[0] !== 'none') $('rule').innerHTML += ' The final consonant (받침) sits at the <b class="text-ink">bottom</b>.';
+    if (animate) { const s = $('syllable'); s.classList.remove('pop'); void s.offsetWidth; s.classList.add('pop'); }
+  }
+
+  makePicker($('pick-i'), INITIALS, 'i');
+  makePicker($('pick-v'), VOWELS, 'v');
+  makePicker($('pick-f'), FINALS, 'f');
+  render(false);
+  $('speak').addEventListener('click', () => say($('syllable').textContent));
+
+  // 글자표
+  function letterCard(ch, roman, sub, sayText) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'letter';
+    b.setAttribute('aria-label', ch + ', ' + roman);
+    b.innerHTML = '<span class="block font-hangul text-3xl leading-tight">' + ch + '</span>' +
+      '<span class="block text-xs font-bold text-blue">' + roman + '</span>' +
+      (sub ? '<span class="block text-[11px] text-muted">' + sub + '</span>' : '');
+    b.addEventListener('click', () => say(sayText));
+    return b;
+  }
+  INITIALS.forEach(([ch, , r]) => $('consonants').appendChild(letterCard(ch, ch === 'ㅇ' ? 'silent / ng' : (ch === 'ㄹ' ? 'r / l' : r), LETTER_NAMES[ch], LETTER_SAY[ch])));
+  VOWELS.forEach(([ch, , r]) => $('vowels').appendChild(letterCard(ch, r, '', VOWEL_SAY[ch])));
+
+  // 생활 단어 탭
+  const PLACES = {
+    'Café 카페': [['아이스 아메리카노','aiseu amerikano','Iced americano'],['따뜻한 걸로 주세요','ttatteuthan geollo juseyo','A hot one, please'],['포장이요','pojang-iyo','To go, please'],['여기서 먹을게요','yeogiseo meogeulgeyo','For here'],['영수증','yeongsujeung','Receipt']],
+    'Store 편의점': [['얼마예요?','eolmayeyo?','How much is it?'],['봉투 필요해요','bongtu piryohaeyo','I need a bag'],['카드로 할게요','kadeuro halgeyo','I\'ll pay by card'],['현금','hyeongeum','Cash'],['삼각김밥','samgak gimbap','Triangle kimbap']],
+    'Subway 지하철': [['역','yeok','Station'],['출구','chulgu','Exit'],['환승','hwanseung','Transfer'],['교통카드','gyotong kadeu','Transit card'],['몇 호선이에요?','myeot hoseon-ieyo?','Which line is it?']],
+    'Restaurant 식당': [['메뉴판 주세요','menyupan juseyo','Menu, please'],['이거 주세요','igeo juseyo','This one, please'],['물','mul','Water'],['안 맵게 해 주세요','an maepge hae juseyo','Not spicy, please'],['계산할게요','gyesanhalgeyo','I\'d like to pay']]
+  };
+  const names = Object.keys(PLACES);
+  let current = 0;
+  function renderWords() {
+    $('word-list').innerHTML = PLACES[names[current]].map(([ko, ro, en]) =>
+      '<li class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-5 py-4">' +
+        '<span class="min-w-0"><span class="block font-hangul text-2xl">' + ko + '</span><span class="block text-sm font-bold text-blue">' + ro + '</span></span>' +
+        '<span class="text-sm text-muted">' + en + '</span>' +
+      '</li>').join('');
+  }
+  names.forEach((n, idx) => {
+    const t = document.createElement('button');
+    t.type = 'button';
+    t.role = 'tab';
+    t.className = 'tab rounded-full border-2 border-line bg-surface px-4 py-1.5 text-sm font-bold';
+    t.textContent = n;
+    t.setAttribute('aria-selected', String(idx === current));
+    t.addEventListener('click', () => {
+      current = idx;
+      $('tabs').querySelectorAll('button').forEach((x, j) => x.setAttribute('aria-selected', String(j === idx)));
+      renderWords();
+    });
+    $('tabs').appendChild(t);
+  });
+  renderWords();
+})();
+</script>

@@ -1,0 +1,264 @@
+<title>HangulEasy 3단계 시안</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Jua&family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          bg: 'var(--bg)', surface: 'var(--surface)', ink: 'var(--ink)', muted: 'var(--muted)', line: 'var(--line)',
+          blue: 'var(--blue)', red: 'var(--red)', yellow: 'var(--yellow)', onyellow: 'var(--on-yellow)', good: 'var(--good)'
+        },
+        fontFamily: {
+          display: ['"Bricolage Grotesque"', 'Jua', '"Noto Sans KR"', 'system-ui', 'sans-serif'],
+          hangul: ['Jua', '"Noto Sans KR"', 'system-ui', 'sans-serif'],
+          sans: ['"Noto Sans KR"', '"Apple SD Gothic Neo"', '"Malgun Gothic"', 'system-ui', 'sans-serif']
+        }
+      }
+    }
+  }
+</script>
+<style>
+  /* Layout: 메인과 같은 오방색 토큰. 왼쪽 수업 목록 + 오른쪽 본문(모양 원리 → 모음 → 자음 → 퀴즈) → 다음 단계 */
+  :root {
+    --bg: #FFFDF8;
+    --surface: #FFFFFF;
+    --ink: #16171D;
+    --muted: #5A5D6A;
+    --line: #E9E4D8;
+    --blue: #1E5AD7;
+    --red: #EC4130;
+    --yellow: #FFC21A;
+    --on-yellow: #16171D;
+    --good: #138A4F;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121318; --surface: #1B1D25; --ink: #F5F3EE; --muted: #A4A7B4; --line: #2C2F3B;
+      --blue: #6E9BFF; --red: #FF6E5E; --yellow: #FFCB3D; --good: #4CC98A; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #121318; --surface: #1B1D25; --ink: #F5F3EE; --muted: #A4A7B4; --line: #2C2F3B;
+    --blue: #6E9BFF; --red: #FF6E5E; --yellow: #FFCB3D; --good: #4CC98A; color-scheme: dark;
+  }
+  body { background: var(--bg); color: var(--ink); font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif; line-height: 1.6; }
+  .gutter { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  h1, h2, h3 { text-wrap: balance; }
+  .eyebrow { letter-spacing: .12em; text-transform: uppercase; }
+  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
+  .site-header { top: env(safe-area-inset-top, 0px); }
+  .side { top: calc(env(safe-area-inset-top, 0px) + 5rem); }
+  .tint-blue { background: color-mix(in oklab, var(--blue) 12%, var(--surface)); }
+  .tint-red { background: color-mix(in oklab, var(--red) 12%, var(--surface)); }
+  .tint-yellow { background: color-mix(in oklab, var(--yellow) 22%, var(--surface)); }
+  .tint-good { background: color-mix(in oklab, var(--good) 14%, var(--surface)); }
+  button:focus-visible, a:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; border-radius: 10px; }
+  .chip { font-size: .72rem; font-weight: 700; padding: .15rem .55rem; border-radius: 999px; white-space: nowrap; }
+  .card { border: 2px solid var(--line); border-radius: 18px; background: var(--surface); }
+  .play { width: 2.25rem; height: 2.25rem; border-radius: 999px; display: grid; place-items: center; font-size: .8rem; }
+  .opt { border: 2px solid var(--line); border-radius: 14px; background: var(--surface); padding: .7rem 1rem; font-weight: 700; text-align: left; transition: border-color .12s ease, transform .12s ease; }
+  .opt:hover:not(:disabled) { border-color: var(--ink); transform: translateY(-2px); }
+  .opt.right { border-color: var(--good); background: color-mix(in oklab, var(--good) 14%, var(--surface)); }
+  .opt.wrong { border-color: var(--red); background: color-mix(in oklab, var(--red) 12%, var(--surface)); }
+  .lesson[aria-current="step"] { background: var(--ink); color: var(--bg); }
+  .lesson[aria-current="step"] .num { background: var(--yellow); color: var(--on-yellow); }
+  .mouth { font-family: Jua, "Noto Sans KR", sans-serif; }
+  @media (prefers-reduced-motion: reduce) { .opt { transition: none; } .opt:hover:not(:disabled) { transform: none; } }
+
+  .bubble { border-radius: 18px; padding: .75rem 1rem; max-width: 34rem; }
+  .bubble.them { border-top-left-radius: 4px; }
+  .bubble.me { border-top-right-radius: 4px; margin-left: auto; }
+  .sign { border-radius: 12px; font-family: Jua, "Noto Sans KR", sans-serif; }
+  .tok { border-bottom: 3px solid currentColor; padding-bottom: 2px; }
+</style>
+
+<!-- 헤더 -->
+<header class="site-header sticky z-20 bg-bg border-b border-line gutter">
+  <div class="max-w-6xl mx-auto flex items-center justify-between gap-4 py-3">
+    <a href="#top" class="flex items-center gap-2 text-ink">
+      <span class="grid grid-cols-3 gap-0.5" aria-hidden="true">
+        <span class="w-2.5 h-2.5 rounded-sm bg-blue"></span><span class="w-2.5 h-2.5 rounded-sm bg-red"></span><span class="w-2.5 h-2.5 rounded-sm bg-yellow"></span>
+      </span>
+      <span class="font-display text-xl font-extrabold tracking-tight">Hangul<span class="text-blue">Easy</span></span>
+    </a>
+    <nav aria-label="Steps" class="flex items-center gap-1 sm:gap-2 text-sm font-bold">
+      <a href="#next" class="rounded-full px-3 py-1 hover:text-blue hidden md:inline">1 Hangul</a><a href="#next" class="rounded-full px-3 py-1 hover:text-blue hidden sm:inline">2 Greetings</a><a href="#top" class="rounded-full bg-yellow px-3 py-1" style="color:var(--on-yellow)" aria-current="page">3 Words</a><a href="#next" class="rounded-full px-3 py-1 hover:text-blue hidden sm:inline">4 K-pop</a><a href="#next" class="rounded-full px-3 py-1 hover:text-blue hidden md:inline">5 Culture</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <!-- 페이지 머리 -->
+  <section class="gutter tint-red border-b border-line">
+    <div class="max-w-6xl mx-auto py-10 sm:py-12">
+      <nav aria-label="Breadcrumb" class="text-sm text-muted">
+        <a href="#top" class="hover:text-ink">Home</a> <span aria-hidden="true">›</span> <span class="text-ink font-bold">Step 3 · Everyday words</span>
+      </nav>
+      <div class="mt-5 flex flex-wrap items-end justify-between gap-6">
+        <div class="min-w-0 max-w-3xl">
+          <div class="flex flex-wrap gap-2"><span class="chip bg-surface">초보 Beginner</span><span class="chip bg-surface">5 lessons</span><span class="chip bg-surface">24 words</span></div>
+          <h1 class="font-display font-extrabold text-4xl sm:text-5xl leading-[1.1] mt-4 tracking-tight">Everyday Korean: Order Coffee, Ride the Subway &amp; Pay at a Store</h1>
+          <p class="mt-4 text-lg text-muted">Learn the words you actually need on a normal day in Seoul. Each lesson is a real situation with a short conversation, the key words and one pattern you can reuse everywhere.</p>
+        </div>
+        <div class="flex items-center gap-3" aria-label="Your progress">
+          <div class="text-right">
+            <p class="text-xs text-muted">Your progress</p>
+            <p class="font-display font-extrabold text-2xl">1 / 5</p>
+          </div>
+          <div class="w-28 h-3 rounded-full bg-surface border-2 border-ink overflow-hidden"><div class="h-full bg-red" style="width:20.0%"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="gutter">
+    <div class="max-w-6xl mx-auto py-10 grid gap-10 lg:grid-cols-[15rem_1fr]">
+      <!-- 수업 목록 -->
+      <aside class="min-w-0">
+        <div class="side lg:sticky">
+          <p class="eyebrow text-xs font-bold text-muted">Lessons in step 3</p>
+          <ol class="mt-3 flex lg:flex-col gap-2 overflow-x-auto pb-2 lg:pb-0">
+            <li><a href="#cafe" class="lesson flex items-center gap-3 rounded-xl px-3 py-2 whitespace-nowrap hover:bg-[color:var(--line)]" aria-current="step"><span class="num w-6 h-6 rounded-full grid place-items-center text-xs font-bold tint-blue">1</span>At a café</a></li><li><a href="#subway" class="lesson flex items-center gap-3 rounded-xl px-3 py-2 whitespace-nowrap hover:bg-[color:var(--line)]"><span class="num w-6 h-6 rounded-full grid place-items-center text-xs font-bold tint-blue">2</span>On the subway</a></li><li><a href="#store" class="lesson flex items-center gap-3 rounded-xl px-3 py-2 whitespace-nowrap hover:bg-[color:var(--line)]"><span class="num w-6 h-6 rounded-full grid place-items-center text-xs font-bold tint-blue">3</span>At the store</a></li><li><span class="lesson flex items-center gap-3 rounded-xl px-3 py-2 whitespace-nowrap text-muted"><span class="num w-6 h-6 rounded-full grid place-items-center text-xs font-bold border border-line">4</span>Numbers &amp; prices</span></li><li><span class="lesson flex items-center gap-3 rounded-xl px-3 py-2 whitespace-nowrap text-muted"><span class="num w-6 h-6 rounded-full grid place-items-center text-xs font-bold border border-line">5</span>At a restaurant</span></li>
+          </ol>
+        </div>
+      </aside>
+
+      <!-- 본문 -->
+      <div class="min-w-0 space-y-14">
+        <section id="cafe" aria-labelledby="cafe-title"><div class="flex flex-wrap items-end justify-between gap-3"><div><p class="eyebrow text-xs font-bold text-red">Lesson 1</p><h2 id="cafe-title" class="font-display font-extrabold text-3xl mt-2 tracking-tight">Ordering at a café <span class="font-hangul font-normal text-muted">카페에서</span></h2></div><p class="text-sm text-muted" data-audio-hint>Tap ▶ to hear it.</p></div><p class="mt-3 text-muted max-w-2xl">Most café menus in Korea are English loanwords written in Hangul, so you already know half the words.</p><div class="mt-6 card p-5 sm:p-6"><p class="eyebrow text-xs font-bold text-muted">Listen to the conversation</p><div class="mt-4 space-y-3"><div class="flex flex-col items-start"><p class="text-xs font-bold text-muted mb-1">Staff</p><div class="bubble them tint-yellow"><div class="flex items-center gap-3 "><p class="font-hangul text-xl">어서 오세요.</p><button type="button" class="play bg-surface font-bold shrink-0" data-say="어서 오세요." aria-label="Listen to 어서 오세요.">▶</button></div><p class="text-sm font-bold text-blue mt-1">eoseo oseyo</p><p class="text-sm text-muted">Welcome.</p></div></div><div class="flex flex-col items-end text-right"><p class="text-xs font-bold text-muted mb-1">You</p><div class="bubble me tint-blue"><div class="flex items-center gap-3 flex-row-reverse"><p class="font-hangul text-xl">아이스 아메리카노 하나 주세요.</p><button type="button" class="play bg-surface font-bold shrink-0" data-say="아이스 아메리카노 하나 주세요." aria-label="Listen to 아이스 아메리카노 하나 주세요.">▶</button></div><p class="text-sm font-bold text-blue mt-1">aiseu amerikano hana juseyo</p><p class="text-sm text-muted">One iced americano, please.</p></div></div><div class="flex flex-col items-start"><p class="text-xs font-bold text-muted mb-1">Staff</p><div class="bubble them tint-yellow"><div class="flex items-center gap-3 "><p class="font-hangul text-xl">드시고 가세요?</p><button type="button" class="play bg-surface font-bold shrink-0" data-say="드시고 가세요?" aria-label="Listen to 드시고 가세요?">▶</button></div><p class="text-sm font-bold text-blue mt-1">deusigo gaseyo?</p><p class="text-sm text-muted">For here?</p></div></div><div class="flex flex-col items-end text-right"><p class="text-xs font-bold text-muted mb-1">You</p><div class="bubble me tint-blue"><div class="flex items-center gap-3 flex-row-reverse"><p class="font-hangul text-xl">아니요, 포장이요.</p><button type="button" class="play bg-surface font-bold shrink-0" data-say="아니요, 포장이요." aria-label="Listen to 아니요, 포장이요.">▶</button></div><p class="text-sm font-bold text-blue mt-1">aniyo, pojang-iyo</p><p class="text-sm text-muted">No, to go.</p></div></div><div class="flex flex-col items-start"><p class="text-xs font-bold text-muted mb-1">Staff</p><div class="bubble them tint-yellow"><div class="flex items-center gap-3 "><p class="font-hangul text-xl">사천오백 원입니다.</p><button type="button" class="play bg-surface font-bold shrink-0" data-say="사천오백 원입니다." aria-label="Listen to 사천오백 원입니다.">▶</button></div><p class="text-sm font-bold text-blue mt-1">sacheon-obaek wonimnida</p><p class="text-sm text-muted">That’s 4,500 won.</p></div></div></div></div><div class="mt-6 rounded-3xl border-2 border-ink bg-surface p-5 sm:p-6" style="box-shadow: 6px 6px 0 var(--blue)"><p class="eyebrow text-xs font-bold text-muted">Pattern</p><p class="mt-1 font-display font-extrabold text-2xl">[thing] + 주세요 = “___, please”</p><ul class="mt-4 grid gap-2 sm:grid-cols-2 tint-blue rounded-2xl p-2"><li class="flex items-center justify-between gap-3 rounded-xl bg-surface px-4 py-2.5"><span><span class="font-hangul text-xl">물 주세요</span> <span class="text-sm text-muted">mul juseyo · Water, please</span></span><button type="button" class="play tint-yellow font-bold shrink-0" data-say="물 주세요" aria-label="Listen to 물 주세요">▶</button></li><li class="flex items-center justify-between gap-3 rounded-xl bg-surface px-4 py-2.5"><span><span class="font-hangul text-xl">이거 주세요</span> <span class="text-sm text-muted">igeo juseyo · This one, please</span></span><button type="button" class="play tint-yellow font-bold shrink-0" data-say="이거 주세요" aria-label="Listen to 이거 주세요">▶</button></li><li class="flex items-center justify-between gap-3 rounded-xl bg-surface px-4 py-2.5"><span><span class="font-hangul text-xl">영수증 주세요</span> <span class="text-sm text-muted">yeongsujeung juseyo · Receipt, please</span></span><button type="button" class="play tint-yellow font-bold shrink-0" data-say="영수증 주세요" aria-label="Listen to 영수증 주세요">▶</button></li><li class="flex items-center justify-between gap-3 rounded-xl bg-surface px-4 py-2.5"><span><span class="font-hangul text-xl">하나 더 주세요</span> <span class="text-sm text-muted">hana deo juseyo · One more, please</span></span><button type="button" class="play tint-yellow font-bold shrink-0" data-say="하나 더 주세요" aria-label="Listen to 하나 더 주세요">▶</button></li></ul></div><div class="mt-6 grid gap-3 grid-cols-2 lg:grid-cols-4"><article class="card p-5 flex flex-col"><div class="flex items-start justify-between gap-3"><p class="font-hangul text-3xl leading-tight">따뜻한</p></div><p class="mt-1 font-bold text-blue">ttatteuthan</p><div class="mt-1 flex items-end justify-between gap-3 flex-1"><div class="min-w-0"><p class="font-bold">hot (drink)</p></div><button type="button" class="play tint-yellow font-bold shrink-0" data-say="따뜻한" aria-label="Listen to 따뜻한">▶</button></div></article><article class="card p-5 flex flex-col"><div class="flex items-start justify-between gap-3"><p class="font-hangul text-3xl leading-tight">아이스</p></div><p class="mt-1 font-bold text-blue">aiseu</p><div class="mt-1 flex items-end justify-between gap-3 flex-1"><div class="min-w-0"><p class="font-bold">iced</p></div><button type="button" class="play tint-yellow font-bold shrink-0" data-say="아이스" aria-label="Listen to 아이스">▶</button></div></article><article class="card p-5 flex flex-col"><div class="flex items-start justify-between gap-3"><p class="font-hangul text-3xl leading-tight">포장</p></div><p class="mt-1 font-bold text-blue">pojang</p><div class="mt-1 flex items-end justify-between gap-3 flex-1"><div class="min-w-0"><p class="font-bold">to go / takeout</p></div><button type="button" class="play tint-yellow font-bold shrink-0" data-say="포장" aria-label="Listen to 포장">▶</button></div></article><article class="card p-5 flex flex-col"><div class="flex items-start justify-between gap-3"><p class="font-hangul text-3xl leading-tight">매장</p></div><p class="mt-1 font-bold text-blue">maejang</p><div class="mt-1 flex items-end justify-between gap-3 flex-1"><div class="min-w-0"><p class="font-bold">for here (in store)</p></div><button type="button" class="play tint-yellow font-bold shrink-0" data-say="매장" aria-label="Listen to 매장">▶</button></div></article></div></section><section id="subway" aria-labelledby="subway-title"><div class="flex flex-wrap items-end justify-between gap-3"><div><p class="eyebrow text-xs font-bold text-red">Lesson 2</p><h2 id="subway-title" class="font-display font-extrabold text-3xl mt-2 tracking-tight">Riding the subway <span class="font-hangul font-normal text-muted">지하철</span></h2></div><p class="text-sm text-muted" data-audio-hint>Tap ▶ to hear it.</p></div><p class="mt-3 text-muted max-w-2xl">Seoul’s subway signs are in Korean and English, but announcements start in Korean. Catch these words and you won’t miss your stop.</p><div class="mt-6 card p-5"><p class="eyebrow text-xs font-bold text-muted">Signs you will see</p><ul class="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3"><li class="text-center"><div class="sign px-3 py-4" style="background:#FFC21A;color:#16171D"><p class="text-2xl">출구</p><p class="text-xs opacity-90 font-sans font-bold">Exit</p></div><p class="mt-1.5 text-xs text-muted">chulgu</p></li><li class="text-center"><div class="sign px-3 py-4" style="background:#138A4F;color:#fff"><p class="text-2xl">입구</p><p class="text-xs opacity-90 font-sans font-bold">Entrance</p></div><p class="mt-1.5 text-xs text-muted">ipgu</p></li><li class="text-center"><div class="sign px-3 py-4" style="background:#1E5AD7;color:#fff"><p class="text-2xl">갈아타는 곳</p><p class="text-xs opacity-90 font-sans font-bold">Transfer</p></div><p class="mt-1.5 text-xs text-muted">garataneun got</p></li><li class="text-center"><div class="sign px-3 py-4" style="background:#16171D;color:#fff"><p class="text-2xl">화장실</p><p class="text-xs opacity-90 font-sans font-bold">Restroom</p></div><p class="mt-1.5 text-xs text-muted">hwajangsil</p></li></ul></div><div class="mt-6 grid gap-3 sm:grid-cols-2"><article class="card p-5 flex flex-col"><div class="flex items-start justify-between gap-3"><p class="font-hangul text-3xl leading-tight">이번 역은 시청역입니다</p></div><p class="mt-1 font-bold text-blue">ibeon yeogeun sicheong-yeogimnida</p><div class="mt-1 flex items-end justify-between gap-3 flex-1"><div class="min-w-0"><p class="font-bold">This stop is City Hall</p><p class="mt-2 text-sm text-muted">The announcement you hear before every station.</p></div><button type="button" class="play tint-yellow font-bold shrink-0" data-say="이번 역은 시청역입니다" aria-label="Listen to 이번 역은 시청역입니다">▶</button></div></article><article class="card p-5 flex flex-col"><div class="flex items-start justify-between gap-3"><p class="font-hangul text-3xl leading-tight">교통카드</p></div><p class="mt-1 font-bold text-blue">gyotong kadeu</p><div class="mt-1 flex items-end justify-between gap-3 flex-1"><div class="min-w-0"><p class="font-bold">Transit card</p><p class="mt-2 text-sm text-muted">T-money cards work on subways, buses and taxis.</p></div><button type="button" class="play tint-yellow font-bold shrink-0" data-say="교통카드" aria-label="Listen to 교통카드">▶</button></div></article><article class="card p-5 flex flex-col"><div class="flex items-start justify-between gap-3"><p class="font-hangul text-3xl leading-tight">몇 번 출구예요?</p></div><p class="mt-1 font-bold text-blue">myeot beon chulguyeyo?</p><div class="mt-1 flex items-end justify-between gap-3 flex-1"><div class="min-w-0"><p class="font-bold">Which exit number?</p><p class="mt-2 text-sm text-muted">Locals give directions by exit number.</p></div><button type="button" class="play tint-yellow font-bold shrink-0" data-say="몇 번 출구예요?" aria-label="Listen to 몇 번 출구예요?">▶</button></div></article><article class="card p-5 flex flex-col"><div class="flex items-start justify-between gap-3"><p class="font-hangul text-3xl leading-tight">내려요</p><span class="chip tint-blue text-blue">Polite</span></div><p class="mt-1 font-bold text-blue">naeryeoyo</p><div class="mt-1 flex items-end justify-between gap-3 flex-1"><div class="min-w-0"><p class="font-bold">I’m getting off</p><p class="mt-2 text-sm text-muted">Say it softly to get through a crowded train.</p></div><button type="button" class="play tint-yellow font-bold shrink-0" data-say="내려요" aria-label="Listen to 내려요">▶</button></div></article></div></section><section id="store" aria-labelledby="store-title"><div class="flex flex-wrap items-end justify-between gap-3"><div><p class="eyebrow text-xs font-bold text-red">Lesson 3</p><h2 id="store-title" class="font-display font-extrabold text-3xl mt-2 tracking-tight">Paying at a store <span class="font-hangul font-normal text-muted">가게에서</span></h2></div><p class="text-sm text-muted" data-audio-hint>Tap ▶ to hear it.</p></div><p class="mt-3 text-muted max-w-2xl">Convenience store staff usually ask two questions: do you need a bag, and do you want a receipt. Now you can answer both.</p><div class="mt-6 grid gap-3 sm:grid-cols-2"><article class="card p-5 flex flex-col"><div class="flex items-start justify-between gap-3"><p class="font-hangul text-3xl leading-tight">얼마예요?</p><span class="chip tint-blue text-blue">Polite</span></div><p class="mt-1 font-bold text-blue">eolmayeyo?</p><div class="mt-1 flex items-end justify-between gap-3 flex-1"><div class="min-w-0"><p class="font-bold">How much is it?</p></div><button type="button" class="play tint-yellow font-bold shrink-0" data-say="얼마예요?" aria-label="Listen to 얼마예요?">▶</button></div></article><article class="card p-5 flex flex-col"><div class="flex items-start justify-between gap-3"><p class="font-hangul text-3xl leading-tight">카드 돼요?</p><span class="chip tint-blue text-blue">Polite</span></div><p class="mt-1 font-bold text-blue">kadeu dwaeyo?</p><div class="mt-1 flex items-end justify-between gap-3 flex-1"><div class="min-w-0"><p class="font-bold">Can I pay by card?</p><p class="mt-2 text-sm text-muted">Almost always yes. Cards work everywhere.</p></div><button type="button" class="play tint-yellow font-bold shrink-0" data-say="카드 돼요?" aria-label="Listen to 카드 돼요?">▶</button></div></article><article class="card p-5 flex flex-col"><div class="flex items-start justify-between gap-3"><p class="font-hangul text-3xl leading-tight">봉투 필요하세요?</p></div><p class="mt-1 font-bold text-blue">bongtu piryohaseyo?</p><div class="mt-1 flex items-end justify-between gap-3 flex-1"><div class="min-w-0"><p class="font-bold">Do you need a bag?</p><p class="mt-2 text-sm text-muted">Bags cost extra. Answer 네 (yes) or 괜찮아요 (no thanks).</p></div><button type="button" class="play tint-yellow font-bold shrink-0" data-say="봉투 필요하세요?" aria-label="Listen to 봉투 필요하세요?">▶</button></div></article><article class="card p-5 flex flex-col"><div class="flex items-start justify-between gap-3"><p class="font-hangul text-3xl leading-tight">영수증 드릴까요?</p></div><p class="mt-1 font-bold text-blue">yeongsujeung deurilkkayo?</p><div class="mt-1 flex items-end justify-between gap-3 flex-1"><div class="min-w-0"><p class="font-bold">Do you want the receipt?</p><p class="mt-2 text-sm text-muted">Most people say 버려 주세요 (beoryeo juseyo, “please throw it away”).</p></div><button type="button" class="play tint-yellow font-bold shrink-0" data-say="영수증 드릴까요?" aria-label="Listen to 영수증 드릴까요?">▶</button></div></article></div><div class="mt-6 rounded-2xl tint-blue p-5 sm:p-6"><p class="font-bold">Yes and no</p><div class="mt-2 text-sm sm:text-base"><span class="font-hangul text-xl">네</span> <span class="text-muted">ne</span> = yes &nbsp;·&nbsp; <span class="font-hangul text-xl">아니요</span> <span class="text-muted">aniyo</span> = no. You will also hear <span class="font-hangul text-xl">예</span> <span class="text-muted">(ye)</span>, a more formal yes.</div></div></section>
+
+        <!-- 퀴즈 -->
+        <section id="quiz" aria-labelledby="quiz-title">
+          <p class="eyebrow text-xs font-bold text-red">Quick check</p>
+          <h2 id="quiz-title" class="font-display font-extrabold text-3xl mt-2 tracking-tight">Would you survive a day in Seoul?</h2>
+          <div class="mt-6 rounded-3xl border-2 border-ink bg-surface p-5 sm:p-8" style="box-shadow: 8px 8px 0 var(--yellow)">
+            <div class="flex items-center justify-between gap-3 text-sm">
+              <p class="font-bold" id="q-count">Question 1 of 5</p>
+              <p class="text-muted">Score <b class="text-ink" id="q-score">0</b></p>
+            </div>
+            <div class="mt-4 w-full h-2 rounded-full tint-yellow overflow-hidden"><div class="h-full bg-blue transition-all" id="q-bar" style="width:0%"></div></div>
+            <div id="q-body">
+              <p class="mt-6 text-sm text-muted" id="q-ask"></p>
+              <p class="mt-1 font-hangul text-5xl sm:text-6xl" id="q-word"></p>
+              <div class="mt-6 grid gap-2 sm:grid-cols-2" id="q-options"></div>
+              <p class="mt-4 min-h-[1.6em] font-bold" id="q-feedback" aria-live="polite"></p>
+              <button type="button" id="q-next" class="mt-2 rounded-full bg-ink px-6 py-2.5 font-bold" style="color:var(--bg)" hidden>Next question →</button>
+            </div>
+            <div id="q-done" hidden>
+              <p class="mt-6 font-hangul text-5xl">잘했어요!</p>
+              <p class="text-blue font-bold">jalhaesseoyo · Well done!</p>
+              <p class="mt-3 text-lg">You got <b id="q-final">0</b> out of 5.</p>
+              <button type="button" id="q-retry" class="mt-5 rounded-full border-2 border-ink px-6 py-2.5 font-bold">Try again</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 다음 -->
+        <nav id="next" aria-label="Step navigation" class="grid gap-3 sm:grid-cols-2">
+          <a href="#next" class="card p-5 hover:border-ink">
+            <p class="text-xs text-muted">← Back to</p>
+            <p class="font-bold text-lg">Step 2 · Greetings <span class="font-hangul font-normal text-muted">인사말</span></p>
+          </a>
+          <a href="#next" class="rounded-[18px] bg-blue p-5 text-right" style="color:#fff"><p class="text-xs opacity-80">Next step →</p><p class="font-bold text-lg">Step 4 · K-pop phrases <span class="font-hangul font-normal">K-pop 표현</span></p></a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="gutter border-t border-line">
+  <div class="max-w-6xl mx-auto py-8 flex flex-wrap justify-between gap-4 text-sm text-muted">
+    <p class="font-display font-extrabold text-ink">Hangul<span class="text-blue">Easy</span></p>
+    <p>Step 3 페이지 시안</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const canSpeak = 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined';
+  function say(text) {
+    if (!canSpeak) return;
+    try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'ko-KR'; u.rate = 0.8; speechSynthesis.speak(u); } catch (e) {}
+  }
+  if (!canSpeak) {
+    document.querySelectorAll('[data-audio-hint]').forEach((el) => el.textContent = 'Audio plays on the real site.');
+    document.querySelectorAll('button[data-say]').forEach((el) => el.remove());
+  }
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-say]');
+    if (b) say(b.dataset.say);
+  });
+
+  // 레슨 목록: 보고 있는 섹션 표시
+  const links = [...document.querySelectorAll('aside a.lesson')];
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (!en.isIntersecting) return;
+        links.forEach((a) => a.toggleAttribute('aria-current', a.getAttribute('href') === '#' + en.target.id));
+        links.forEach((a) => { if (a.hasAttribute('aria-current')) a.setAttribute('aria-current', 'step'); });
+      });
+    }, { rootMargin: '-30% 0px -60% 0px' });
+    links.forEach((a) => { const t = document.querySelector(a.getAttribute('href')); if (t) io.observe(t); });
+  }
+
+  // 퀴즈: {word, ask, options, answer, explain}
+  const QUIZ = [{"word": "출구", "ask": "You need to leave the station. Which sign is this?", "options": ["Exit", "Entrance", "Transfer", "Restroom"], "answer": "Exit", "explain": "출구 (chulgu) means exit."}, {"word": "얼마예요?", "ask": "What are you asking?", "options": ["Where is it?", "How much is it?", "Is it hot?", "Can I pay by card?"], "answer": "How much is it?", "explain": "얼마 means “how much”."}, {"word": "포장", "ask": "The barista asks 드시고 가세요? You answer with this word. What does it mean?", "options": ["For here", "To go", "Iced", "Receipt"], "answer": "To go", "explain": "포장 means takeout, to go."}, {"word": "물 주세요", "ask": "What does this mean?", "options": ["Water, please", "Coffee, please", "More, please", "This one, please"], "answer": "Water, please", "explain": "물 is water, and 주세요 means “please give me”."}, {"word": "갈아타는 곳", "ask": "What will you find here?", "options": ["The exit", "A transfer to another line", "The ticket machine", "A restroom"], "answer": "A transfer to another line", "explain": "갈아타다 means “to change trains”."}];
+  const isHangul = (s) => /[\uAC00-\uD7A3]/.test(s);
+  let q = 0, score = 0;
+  function showQ() {
+    const it = QUIZ[q];
+    $('q-count').textContent = 'Question ' + (q + 1) + ' of ' + QUIZ.length;
+    $('q-bar').style.width = (q / QUIZ.length * 100) + '%';
+    $('q-ask').textContent = it.ask;
+    $('q-word').textContent = it.word;
+    $('q-feedback').textContent = '';
+    $('q-next').hidden = true;
+    $('q-options').innerHTML = '';
+    it.options.forEach((o) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'opt' + (isHangul(o) ? ' font-hangul text-lg font-normal' : '');
+      b.dataset.opt = o; b.textContent = o;
+      $('q-options').appendChild(b);
+    });
+  }
+  $('q-options').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-opt]');
+    if (!b || b.disabled) return;
+    const it = QUIZ[q];
+    const ok = b.dataset.opt === it.answer;
+    if (ok) score++;
+    $('q-score').textContent = score;
+    $('q-options').querySelectorAll('button').forEach((x) => {
+      x.disabled = true;
+      if (x.dataset.opt === it.answer) x.classList.add('right');
+      else if (x === b) x.classList.add('wrong');
+    });
+    const fb = document.createElement('span');
+    fb.className = ok ? 'text-good' : 'text-red';
+    fb.textContent = (ok ? 'Correct! ' : 'Not quite. The answer is “' + it.answer + '”. ') + it.explain;
+    $('q-feedback').replaceChildren(fb);
+    if (isHangul(it.word)) say(it.word);
+    $('q-next').textContent = q === QUIZ.length - 1 ? 'See my score →' : 'Next question →';
+    $('q-next').hidden = false;
+  });
+  $('q-next').addEventListener('click', () => {
+    q++;
+    if (q < QUIZ.length) { showQ(); return; }
+    $('q-bar').style.width = '100%';
+    $('q-body').hidden = true;
+    $('q-done').hidden = false;
+    $('q-final').textContent = score;
+  });
+  $('q-retry').addEventListener('click', () => {
+    q = 0; score = 0; $('q-score').textContent = '0';
+    $('q-body').hidden = false; $('q-done').hidden = true; showQ();
+  });
+  showQ();
+})();
+</script>

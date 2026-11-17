@@ -1,0 +1,264 @@
+<title>HangulEasy 5단계 시안</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Jua&family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          bg: 'var(--bg)', surface: 'var(--surface)', ink: 'var(--ink)', muted: 'var(--muted)', line: 'var(--line)',
+          blue: 'var(--blue)', red: 'var(--red)', yellow: 'var(--yellow)', onyellow: 'var(--on-yellow)', good: 'var(--good)'
+        },
+        fontFamily: {
+          display: ['"Bricolage Grotesque"', 'Jua', '"Noto Sans KR"', 'system-ui', 'sans-serif'],
+          hangul: ['Jua', '"Noto Sans KR"', 'system-ui', 'sans-serif'],
+          sans: ['"Noto Sans KR"', '"Apple SD Gothic Neo"', '"Malgun Gothic"', 'system-ui', 'sans-serif']
+        }
+      }
+    }
+  }
+</script>
+<style>
+  /* Layout: 메인과 같은 오방색 토큰. 왼쪽 수업 목록 + 오른쪽 본문(모양 원리 → 모음 → 자음 → 퀴즈) → 다음 단계 */
+  :root {
+    --bg: #FFFDF8;
+    --surface: #FFFFFF;
+    --ink: #16171D;
+    --muted: #5A5D6A;
+    --line: #E9E4D8;
+    --blue: #1E5AD7;
+    --red: #EC4130;
+    --yellow: #FFC21A;
+    --on-yellow: #16171D;
+    --good: #138A4F;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121318; --surface: #1B1D25; --ink: #F5F3EE; --muted: #A4A7B4; --line: #2C2F3B;
+      --blue: #6E9BFF; --red: #FF6E5E; --yellow: #FFCB3D; --good: #4CC98A; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #121318; --surface: #1B1D25; --ink: #F5F3EE; --muted: #A4A7B4; --line: #2C2F3B;
+    --blue: #6E9BFF; --red: #FF6E5E; --yellow: #FFCB3D; --good: #4CC98A; color-scheme: dark;
+  }
+  body { background: var(--bg); color: var(--ink); font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif; line-height: 1.6; }
+  .gutter { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  h1, h2, h3 { text-wrap: balance; }
+  .eyebrow { letter-spacing: .12em; text-transform: uppercase; }
+  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
+  .site-header { top: env(safe-area-inset-top, 0px); }
+  .side { top: calc(env(safe-area-inset-top, 0px) + 5rem); }
+  .tint-blue { background: color-mix(in oklab, var(--blue) 12%, var(--surface)); }
+  .tint-red { background: color-mix(in oklab, var(--red) 12%, var(--surface)); }
+  .tint-yellow { background: color-mix(in oklab, var(--yellow) 22%, var(--surface)); }
+  .tint-good { background: color-mix(in oklab, var(--good) 14%, var(--surface)); }
+  button:focus-visible, a:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; border-radius: 10px; }
+  .chip { font-size: .72rem; font-weight: 700; padding: .15rem .55rem; border-radius: 999px; white-space: nowrap; }
+  .card { border: 2px solid var(--line); border-radius: 18px; background: var(--surface); }
+  .play { width: 2.25rem; height: 2.25rem; border-radius: 999px; display: grid; place-items: center; font-size: .8rem; }
+  .opt { border: 2px solid var(--line); border-radius: 14px; background: var(--surface); padding: .7rem 1rem; font-weight: 700; text-align: left; transition: border-color .12s ease, transform .12s ease; }
+  .opt:hover:not(:disabled) { border-color: var(--ink); transform: translateY(-2px); }
+  .opt.right { border-color: var(--good); background: color-mix(in oklab, var(--good) 14%, var(--surface)); }
+  .opt.wrong { border-color: var(--red); background: color-mix(in oklab, var(--red) 12%, var(--surface)); }
+  .lesson[aria-current="step"] { background: var(--ink); color: var(--bg); }
+  .lesson[aria-current="step"] .num { background: var(--yellow); color: var(--on-yellow); }
+  .mouth { font-family: Jua, "Noto Sans KR", sans-serif; }
+  @media (prefers-reduced-motion: reduce) { .opt { transition: none; } .opt:hover:not(:disabled) { transform: none; } }
+
+  .bubble { border-radius: 18px; padding: .75rem 1rem; max-width: 34rem; }
+  .bubble.them { border-top-left-radius: 4px; }
+  .bubble.me { border-top-right-radius: 4px; margin-left: auto; }
+  .sign { border-radius: 12px; font-family: Jua, "Noto Sans KR", sans-serif; }
+  .tok { border-bottom: 3px solid currentColor; padding-bottom: 2px; }
+</style>
+
+<!-- 헤더 -->
+<header class="site-header sticky z-20 bg-bg border-b border-line gutter">
+  <div class="max-w-6xl mx-auto flex items-center justify-between gap-4 py-3">
+    <a href="#top" class="flex items-center gap-2 text-ink">
+      <span class="grid grid-cols-3 gap-0.5" aria-hidden="true">
+        <span class="w-2.5 h-2.5 rounded-sm bg-blue"></span><span class="w-2.5 h-2.5 rounded-sm bg-red"></span><span class="w-2.5 h-2.5 rounded-sm bg-yellow"></span>
+      </span>
+      <span class="font-display text-xl font-extrabold tracking-tight">Hangul<span class="text-blue">Easy</span></span>
+    </a>
+    <nav aria-label="Steps" class="flex items-center gap-1 sm:gap-2 text-sm font-bold">
+      <a href="#next" class="rounded-full px-3 py-1 hover:text-blue hidden md:inline">1 Hangul</a><a href="#next" class="rounded-full px-3 py-1 hover:text-blue hidden md:inline">2 Greetings</a><a href="#next" class="rounded-full px-3 py-1 hover:text-blue hidden md:inline">3 Words</a><a href="#next" class="rounded-full px-3 py-1 hover:text-blue hidden sm:inline">4 K-pop</a><a href="#top" class="rounded-full bg-yellow px-3 py-1" style="color:var(--on-yellow)" aria-current="page">5 Culture</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <!-- 페이지 머리 -->
+  <section class="gutter tint-yellow border-b border-line">
+    <div class="max-w-6xl mx-auto py-10 sm:py-12">
+      <nav aria-label="Breadcrumb" class="text-sm text-muted">
+        <a href="#top" class="hover:text-ink">Home</a> <span aria-hidden="true">›</span> <span class="text-ink font-bold">Step 5 · Korean culture</span>
+      </nav>
+      <div class="mt-5 flex flex-wrap items-end justify-between gap-6">
+        <div class="min-w-0 max-w-3xl">
+          <div class="flex flex-wrap gap-2"><span class="chip bg-surface">초보 Beginner</span><span class="chip bg-surface">5 lessons</span><span class="chip bg-surface">Final step</span></div>
+          <h1 class="font-display font-extrabold text-4xl sm:text-5xl leading-[1.1] mt-4 tracking-tight">Korean Culture Basics: Honorifics, Holidays &amp; Table Manners</h1>
+          <p class="mt-4 text-lg text-muted">Language and manners go together in Korea. Learn how to address people, what happens on the big holidays and how to behave at a shared meal.</p>
+        </div>
+        <div class="flex items-center gap-3" aria-label="Your progress">
+          <div class="text-right">
+            <p class="text-xs text-muted">Your progress</p>
+            <p class="font-display font-extrabold text-2xl">1 / 5</p>
+          </div>
+          <div class="w-28 h-3 rounded-full bg-surface border-2 border-ink overflow-hidden"><div class="h-full bg-red" style="width:20.0%"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="gutter">
+    <div class="max-w-6xl mx-auto py-10 grid gap-10 lg:grid-cols-[15rem_1fr]">
+      <!-- 수업 목록 -->
+      <aside class="min-w-0">
+        <div class="side lg:sticky">
+          <p class="eyebrow text-xs font-bold text-muted">Lessons in step 5</p>
+          <ol class="mt-3 flex lg:flex-col gap-2 overflow-x-auto pb-2 lg:pb-0">
+            <li><a href="#titles" class="lesson flex items-center gap-3 rounded-xl px-3 py-2 whitespace-nowrap hover:bg-[color:var(--line)]" aria-current="step"><span class="num w-6 h-6 rounded-full grid place-items-center text-xs font-bold tint-blue">1</span>Names &amp; titles</a></li><li><a href="#holidays" class="lesson flex items-center gap-3 rounded-xl px-3 py-2 whitespace-nowrap hover:bg-[color:var(--line)]"><span class="num w-6 h-6 rounded-full grid place-items-center text-xs font-bold tint-blue">2</span>Holidays</a></li><li><a href="#table" class="lesson flex items-center gap-3 rounded-xl px-3 py-2 whitespace-nowrap hover:bg-[color:var(--line)]"><span class="num w-6 h-6 rounded-full grid place-items-center text-xs font-bold tint-blue">3</span>Table manners</a></li><li><a href="#daily" class="lesson flex items-center gap-3 rounded-xl px-3 py-2 whitespace-nowrap hover:bg-[color:var(--line)]"><span class="num w-6 h-6 rounded-full grid place-items-center text-xs font-bold tint-blue">4</span>Daily life</a></li><li><span class="lesson flex items-center gap-3 rounded-xl px-3 py-2 whitespace-nowrap text-muted"><span class="num w-6 h-6 rounded-full grid place-items-center text-xs font-bold border border-line">5</span>Final review</span></li>
+          </ol>
+        </div>
+      </aside>
+
+      <!-- 본문 -->
+      <div class="min-w-0 space-y-14">
+        <section id="titles" aria-labelledby="titles-title"><div class="flex flex-wrap items-end justify-between gap-3"><div><p class="eyebrow text-xs font-bold text-red">Lesson 1</p><h2 id="titles-title" class="font-display font-extrabold text-3xl mt-2 tracking-tight">How to call people <span class="font-hangul font-normal text-muted">호칭</span></h2></div><p class="text-sm text-muted" data-audio-hint>Tap ▶ to hear it.</p></div><p class="mt-3 text-muted max-w-2xl">Using someone’s first name alone is only for close friends of the same age or younger. With everyone else, add a title.</p><div class="mt-6 grid gap-3 sm:grid-cols-2"><article class="card p-5 flex flex-col"><div class="flex items-start justify-between gap-3"><p class="font-hangul text-3xl leading-tight">지민 씨</p></div><p class="mt-1 font-bold text-blue">Jimin ssi</p><div class="mt-1 flex items-end justify-between gap-3 flex-1"><div class="min-w-0"><p class="font-bold">Jimin (polite)</p><p class="mt-2 text-sm text-muted">씨 after a name is polite for coworkers and new acquaintances. Never add it to your own name.</p></div><button type="button" class="play tint-yellow font-bold shrink-0" data-say="지민 씨" aria-label="Listen to 지민 씨">▶</button></div></article><article class="card p-5 flex flex-col"><div class="flex items-start justify-between gap-3"><p class="font-hangul text-3xl leading-tight">선생님</p></div><p class="mt-1 font-bold text-blue">seonsaengnim</p><div class="mt-1 flex items-end justify-between gap-3 flex-1"><div class="min-w-0"><p class="font-bold">Teacher / Sir, Ma’am</p><p class="mt-2 text-sm text-muted">님 adds respect. Also used for doctors and many professionals.</p></div><button type="button" class="play tint-yellow font-bold shrink-0" data-say="선생님" aria-label="Listen to 선생님">▶</button></div></article><article class="card p-5 flex flex-col"><div class="flex items-start justify-between gap-3"><p class="font-hangul text-3xl leading-tight">선배</p></div><p class="mt-1 font-bold text-blue">seonbae</p><div class="mt-1 flex items-end justify-between gap-3 flex-1"><div class="min-w-0"><p class="font-bold">Senior (school, work)</p><p class="mt-2 text-sm text-muted">Someone who started before you. You are their 후배 (hubae).</p></div><button type="button" class="play tint-yellow font-bold shrink-0" data-say="선배" aria-label="Listen to 선배">▶</button></div></article><article class="card p-5 flex flex-col"><div class="flex items-start justify-between gap-3"><p class="font-hangul text-3xl leading-tight">사장님</p></div><p class="mt-1 font-bold text-blue">sajangnim</p><div class="mt-1 flex items-end justify-between gap-3 flex-1"><div class="min-w-0"><p class="font-bold">Boss / Shop owner</p><p class="mt-2 text-sm text-muted">How customers call the owner of a restaurant or shop.</p></div><button type="button" class="play tint-yellow font-bold shrink-0" data-say="사장님" aria-label="Listen to 사장님">▶</button></div></article></div><div class="mt-6 rounded-2xl tint-yellow p-5 sm:p-6"><p class="font-bold">Why Koreans ask your age</p><div class="mt-2 text-sm sm:text-base"><span class="font-hangul text-lg">몇 살이에요?</span> <span class="text-muted">(myeot sarieyo?, “How old are you?”)</span> is not rude. Age decides who uses polite speech and which title to use, so people ask early.</div></div></section><section id="holidays" aria-labelledby="holidays-title"><div class="flex flex-wrap items-end justify-between gap-3"><div><p class="eyebrow text-xs font-bold text-red">Lesson 2</p><h2 id="holidays-title" class="font-display font-extrabold text-3xl mt-2 tracking-tight">The big holidays <span class="font-hangul font-normal text-muted">명절과 기념일</span></h2></div></div><p class="mt-3 text-muted max-w-2xl">Two holidays empty out Seoul as families travel home. A few others are just for fun.</p><div class="mt-6 grid gap-3 sm:grid-cols-2"><article class="rounded-2xl tint-blue p-5"><div class="flex items-start justify-between gap-3"><div><p class="font-hangul text-2xl">설날</p><p class="text-xs font-bold text-blue">Seollal</p></div><span class="chip bg-surface">Jan–Feb</span></div><h3 class="font-bold mt-2">Lunar New Year</h3><p class="mt-1 text-sm text-muted">Children bow to elders (세배, sebae) and get money (세뱃돈). Everyone eats 떡국, rice cake soup, to turn a year older.</p></article><article class="rounded-2xl tint-red p-5"><div class="flex items-start justify-between gap-3"><div><p class="font-hangul text-2xl">추석</p><p class="text-xs font-bold text-blue">Chuseok</p></div><span class="chip bg-surface">Sep–Oct</span></div><h3 class="font-bold mt-2">Harvest festival</h3><p class="mt-1 text-sm text-muted">Families visit hometowns, honor ancestors and make half-moon rice cakes called 송편 (songpyeon).</p></article><article class="rounded-2xl tint-yellow p-5"><div class="flex items-start justify-between gap-3"><div><p class="font-hangul text-2xl">한글날</p><p class="text-xs font-bold text-blue">Hangeullal</p></div><span class="chip bg-surface">Oct 9</span></div><h3 class="font-bold mt-2">Hangul Day</h3><p class="mt-1 text-sm text-muted">A national holiday celebrating the alphabet you learned in step 1.</p></article><article class="rounded-2xl tint-good p-5"><div class="flex items-start justify-between gap-3"><div><p class="font-hangul text-2xl">빼빼로데이</p><p class="text-xs font-bold text-blue">Ppaeppaero Day</p></div><span class="chip bg-surface">Nov 11</span></div><h3 class="font-bold mt-2">Pepero Day</h3><p class="mt-1 text-sm text-muted">The date looks like four thin chocolate sticks, so friends and couples trade them.</p></article></div></section><section id="table" aria-labelledby="table-title"><div class="flex flex-wrap items-end justify-between gap-3"><div><p class="eyebrow text-xs font-bold text-red">Lesson 3</p><h2 id="table-title" class="font-display font-extrabold text-3xl mt-2 tracking-tight">Table manners <span class="font-hangul font-normal text-muted">식사 예절</span></h2></div><p class="text-sm text-muted" data-audio-hint>Tap ▶ to hear it.</p></div><p class="mt-3 text-muted max-w-2xl">Korean meals are shared: many side dishes in the middle, one bowl of rice each. Respect for elders guides everything.</p><div class="mt-6 grid gap-4 md:grid-cols-2"><div class="card p-5" style="border-color:var(--good)"><p class="font-bold text-good">Do</p><ul class="mt-3 space-y-3 text-sm sm:text-base"><li class="flex gap-3"><span class="w-6 h-6 shrink-0 rounded-full grid place-items-center text-xs font-bold tint-good text-good" aria-hidden="true">✓</span><span>Wait for the oldest person to start eating.</span></li><li class="flex gap-3"><span class="w-6 h-6 shrink-0 rounded-full grid place-items-center text-xs font-bold tint-good text-good" aria-hidden="true">✓</span><span>Pour drinks for others, and hold your glass with two hands when an elder pours for you.</span></li><li class="flex gap-3"><span class="w-6 h-6 shrink-0 rounded-full grid place-items-center text-xs font-bold tint-good text-good" aria-hidden="true">✓</span><span>Turn your head slightly away when drinking with elders.</span></li><li class="flex gap-3"><span class="w-6 h-6 shrink-0 rounded-full grid place-items-center text-xs font-bold tint-good text-good" aria-hidden="true">✓</span><span>Leave your rice and soup bowls on the table while you eat.</span></li></ul></div><div class="card p-5" style="border-color:var(--red)"><p class="font-bold text-red">Don’t</p><ul class="mt-3 space-y-3 text-sm sm:text-base"><li class="flex gap-3"><span class="w-6 h-6 shrink-0 rounded-full grid place-items-center text-xs font-bold tint-red text-red" aria-hidden="true">✕</span><span>Stick your chopsticks upright in rice. It looks like a funeral offering.</span></li><li class="flex gap-3"><span class="w-6 h-6 shrink-0 rounded-full grid place-items-center text-xs font-bold tint-red text-red" aria-hidden="true">✕</span><span>Pour your own drink at a group dinner.</span></li><li class="flex gap-3"><span class="w-6 h-6 shrink-0 rounded-full grid place-items-center text-xs font-bold tint-red text-red" aria-hidden="true">✕</span><span>Blow your nose at the table.</span></li><li class="flex gap-3"><span class="w-6 h-6 shrink-0 rounded-full grid place-items-center text-xs font-bold tint-red text-red" aria-hidden="true">✕</span><span>Start eating before everyone has been served.</span></li></ul></div></div><div class="mt-6 grid gap-3 sm:grid-cols-2"><div class="card p-5"><p class="text-xs font-bold text-muted eyebrow">Before eating</p><div class="mt-2 flex items-center justify-between gap-3"><p class="font-hangul text-2xl">잘 먹겠습니다</p><button type="button" class="play tint-yellow font-bold shrink-0" data-say="잘 먹겠습니다" aria-label="Listen to 잘 먹겠습니다">▶</button></div><p class="text-sm font-bold text-blue">jal meokgesseumnida</p><p class="text-sm text-muted">“I will eat well.” Thanks to whoever cooked or paid.</p></div><div class="card p-5"><p class="text-xs font-bold text-muted eyebrow">After eating</p><div class="mt-2 flex items-center justify-between gap-3"><p class="font-hangul text-2xl">잘 먹었습니다</p><button type="button" class="play tint-yellow font-bold shrink-0" data-say="잘 먹었습니다" aria-label="Listen to 잘 먹었습니다">▶</button></div><p class="text-sm font-bold text-blue">jal meogeosseumnida</p><p class="text-sm text-muted">“I ate well.” Say it when you finish or leave.</p></div></div></section><section id="daily" aria-labelledby="daily-title"><div class="flex flex-wrap items-end justify-between gap-3"><div><p class="eyebrow text-xs font-bold text-red">Lesson 4</p><h2 id="daily-title" class="font-display font-extrabold text-3xl mt-2 tracking-tight">Daily life <span class="font-hangul font-normal text-muted">일상</span></h2></div></div><p class="mt-3 text-muted max-w-2xl">Small habits you will notice in your first week.</p><div class="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4"><article class="rounded-2xl tint-blue p-5"><div class="flex items-start justify-between gap-3"><div><p class="font-hangul text-2xl">신발</p><p class="text-xs font-bold text-blue">sinbal</p></div></div><h3 class="font-bold mt-2">Shoes off indoors</h3><p class="mt-1 text-sm text-muted">In homes and some restaurants with floor seating. Look for a row of shoes at the door.</p></article><article class="rounded-2xl tint-red p-5"><div class="flex items-start justify-between gap-3"><div><p class="font-hangul text-2xl">빨리빨리</p><p class="text-xs font-bold text-blue">ppalli-ppalli</p></div></div><h3 class="font-bold mt-2">“Quick, quick!”</h3><p class="mt-1 text-sm text-muted">Fast delivery, fast internet, fast service. Speed is part of daily life.</p></article><article class="rounded-2xl tint-yellow p-5"><div class="flex items-start justify-between gap-3"><div><p class="font-hangul text-2xl">배달</p><p class="text-xs font-bold text-blue">baedal</p></div></div><h3 class="font-bold mt-2">Delivery, anytime</h3><p class="mt-1 text-sm text-muted">Food arrives almost anywhere, even to a park bench along the Han River.</p></article><article class="rounded-2xl tint-good p-5"><div class="flex items-start justify-between gap-3"><div><p class="font-hangul text-2xl">만 나이</p><p class="text-xs font-bold text-blue">man nai</p></div></div><h3 class="font-bold mt-2">Age, the international way</h3><p class="mt-1 text-sm text-muted">Since 2023, official age is counted like everywhere else. Older people may still use the traditional count.</p></article></div></section>
+
+        <!-- 퀴즈 -->
+        <section id="quiz" aria-labelledby="quiz-title">
+          <p class="eyebrow text-xs font-bold text-red">Quick check</p>
+          <h2 id="quiz-title" class="font-display font-extrabold text-3xl mt-2 tracking-tight">Culture check</h2>
+          <div class="mt-6 rounded-3xl border-2 border-ink bg-surface p-5 sm:p-8" style="box-shadow: 8px 8px 0 var(--yellow)">
+            <div class="flex items-center justify-between gap-3 text-sm">
+              <p class="font-bold" id="q-count">Question 1 of 5</p>
+              <p class="text-muted">Score <b class="text-ink" id="q-score">0</b></p>
+            </div>
+            <div class="mt-4 w-full h-2 rounded-full tint-yellow overflow-hidden"><div class="h-full bg-blue transition-all" id="q-bar" style="width:0%"></div></div>
+            <div id="q-body">
+              <p class="mt-6 text-sm text-muted" id="q-ask"></p>
+              <p class="mt-1 font-hangul text-5xl sm:text-6xl" id="q-word"></p>
+              <div class="mt-6 grid gap-2 sm:grid-cols-2" id="q-options"></div>
+              <p class="mt-4 min-h-[1.6em] font-bold" id="q-feedback" aria-live="polite"></p>
+              <button type="button" id="q-next" class="mt-2 rounded-full bg-ink px-6 py-2.5 font-bold" style="color:var(--bg)" hidden>Next question →</button>
+            </div>
+            <div id="q-done" hidden>
+              <p class="mt-6 font-hangul text-5xl">잘했어요!</p>
+              <p class="text-blue font-bold">jalhaesseoyo · Well done!</p>
+              <p class="mt-3 text-lg">You got <b id="q-final">0</b> out of 5.</p>
+              <button type="button" id="q-retry" class="mt-5 rounded-full border-2 border-ink px-6 py-2.5 font-bold">Try again</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 다음 -->
+        <nav id="next" aria-label="Step navigation" class="grid gap-3 sm:grid-cols-2">
+          <a href="#next" class="card p-5 hover:border-ink">
+            <p class="text-xs text-muted">← Back to</p>
+            <p class="font-bold text-lg">Step 4 · K-pop phrases <span class="font-hangul font-normal text-muted">K-pop 표현</span></p>
+          </a>
+          <a href="#top" class="rounded-[18px] bg-red p-5 text-right" style="color:#fff"><p class="text-xs opacity-80">All five steps done →</p><p class="font-bold text-lg">Get your certificate <span class="font-hangul font-normal">수료증</span></p></a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="gutter border-t border-line">
+  <div class="max-w-6xl mx-auto py-8 flex flex-wrap justify-between gap-4 text-sm text-muted">
+    <p class="font-display font-extrabold text-ink">Hangul<span class="text-blue">Easy</span></p>
+    <p>Step 5 페이지 시안</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const canSpeak = 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined';
+  function say(text) {
+    if (!canSpeak) return;
+    try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'ko-KR'; u.rate = 0.8; speechSynthesis.speak(u); } catch (e) {}
+  }
+  if (!canSpeak) {
+    document.querySelectorAll('[data-audio-hint]').forEach((el) => el.textContent = 'Audio plays on the real site.');
+    document.querySelectorAll('button[data-say]').forEach((el) => el.remove());
+  }
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-say]');
+    if (b) say(b.dataset.say);
+  });
+
+  // 레슨 목록: 보고 있는 섹션 표시
+  const links = [...document.querySelectorAll('aside a.lesson')];
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (!en.isIntersecting) return;
+        links.forEach((a) => a.toggleAttribute('aria-current', a.getAttribute('href') === '#' + en.target.id));
+        links.forEach((a) => { if (a.hasAttribute('aria-current')) a.setAttribute('aria-current', 'step'); });
+      });
+    }, { rootMargin: '-30% 0px -60% 0px' });
+    links.forEach((a) => { const t = document.querySelector(a.getAttribute('href')); if (t) io.observe(t); });
+  }
+
+  // 퀴즈: {word, ask, options, answer, explain}
+  const QUIZ = [{"word": "", "ask": "What do you say before you start eating?", "options": ["잘 먹겠습니다", "잘 먹었습니다", "안녕히 계세요", "괜찮아요"], "answer": "잘 먹겠습니다", "explain": "잘 먹겠습니다 means “I will eat well.”"}, {"word": "추석", "ask": "What is this holiday?", "options": ["Lunar New Year", "Harvest festival", "Hangul Day", "Pepero Day"], "answer": "Harvest festival", "explain": "추석 is Chuseok, the autumn harvest festival."}, {"word": "씨", "ask": "Where should this title go?", "options": ["After your own name", "After a coworker’s name", "After your grandmother’s name", "Before any name"], "answer": "After a coworker’s name", "explain": "씨 is polite, but never for yourself or much older people."}, {"word": "젓가락", "ask": "What should you never do with chopsticks?", "options": ["Rest them on the table", "Use them for side dishes", "Stick them upright in rice", "Hold them in your right hand"], "answer": "Stick them upright in rice", "explain": "It looks like a funeral offering."}, {"word": "세배", "ask": "What is this?", "options": ["A New Year’s bow to elders", "Rice cake soup", "A birthday song", "A family card game"], "answer": "A New Year’s bow to elders", "explain": "Children do 세배 on Seollal and get 세뱃돈 (money) in return."}];
+  const isHangul = (s) => /[\uAC00-\uD7A3]/.test(s);
+  let q = 0, score = 0;
+  function showQ() {
+    const it = QUIZ[q];
+    $('q-count').textContent = 'Question ' + (q + 1) + ' of ' + QUIZ.length;
+    $('q-bar').style.width = (q / QUIZ.length * 100) + '%';
+    $('q-ask').textContent = it.ask;
+    $('q-word').textContent = it.word;
+    $('q-feedback').textContent = '';
+    $('q-next').hidden = true;
+    $('q-options').innerHTML = '';
+    it.options.forEach((o) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'opt' + (isHangul(o) ? ' font-hangul text-lg font-normal' : '');
+      b.dataset.opt = o; b.textContent = o;
+      $('q-options').appendChild(b);
+    });
+  }
+  $('q-options').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-opt]');
+    if (!b || b.disabled) return;
+    const it = QUIZ[q];
+    const ok = b.dataset.opt === it.answer;
+    if (ok) score++;
+    $('q-score').textContent = score;
+    $('q-options').querySelectorAll('button').forEach((x) => {
+      x.disabled = true;
+      if (x.dataset.opt === it.answer) x.classList.add('right');
+      else if (x === b) x.classList.add('wrong');
+    });
+    const fb = document.createElement('span');
+    fb.className = ok ? 'text-good' : 'text-red';
+    fb.textContent = (ok ? 'Correct! ' : 'Not quite. The answer is “' + it.answer + '”. ') + it.explain;
+    $('q-feedback').replaceChildren(fb);
+    if (isHangul(it.word)) say(it.word);
+    $('q-next').textContent = q === QUIZ.length - 1 ? 'See my score →' : 'Next question →';
+    $('q-next').hidden = false;
+  });
+  $('q-next').addEventListener('click', () => {
+    q++;
+    if (q < QUIZ.length) { showQ(); return; }
+    $('q-bar').style.width = '100%';
+    $('q-body').hidden = true;
+    $('q-done').hidden = false;
+    $('q-final').textContent = score;
+  });
+  $('q-retry').addEventListener('click', () => {
+    q = 0; score = 0; $('q-score').textContent = '0';
+    $('q-body').hidden = false; $('q-done').hidden = true; showQ();
+  });
+  showQ();
+})();
+</script>
