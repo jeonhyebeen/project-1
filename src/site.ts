@@ -3,7 +3,7 @@ export const SITE_URL = 'https://hangul-easy.pages.dev'
 export const SITE_NAME = 'HangulEasy'
 
 // 구글 클라우드 콘솔 → 클라이언트에서 받은 웹 클라이언트 ID. 비어 있으면 로그인 버튼이 보이지 않습니다.
-export const GOOGLE_CLIENT_ID = ''
+export const GOOGLE_CLIENT_ID = '1041805887690-pl5clpdefldm9bb1doipht7o29f67u2e.apps.googleusercontent.com'
 
 export type StepMeta = {
   n: number
