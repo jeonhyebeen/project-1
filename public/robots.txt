@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://project-2-67q.pages.dev/sitemap.xml

@@ -1,23 +1,26 @@
-import Header from './components/Header'
-import Hero from './components/Hero'
-import Places from './components/Places'
-import Foods from './components/Foods'
-import Course from './components/Course'
-import Festivals from './components/Festivals'
-import Footer from './components/Footer'
+import { SpeechProvider } from './speech'
+import { normalizePath } from './site'
+import Home from './pages/Home'
+import Hangul from './pages/Hangul'
+import Greetings from './pages/Greetings'
+import Words from './pages/Words'
+import Kpop from './pages/Kpop'
+import Culture from './pages/Culture'
 
-export default function App() {
+const PAGES: Record<string, () => React.ReactNode> = {
+  '/': Home,
+  '/hangul/': Hangul,
+  '/greetings/': Greetings,
+  '/words/': Words,
+  '/kpop/': Kpop,
+  '/culture/': Culture,
+}
+
+export default function App({ path }: { path: string }) {
+  const Page = PAGES[normalizePath(path)]
   return (
-    <>
-      <Header />
-      <main id="top">
-        <Hero />
-        <Places />
-        <Foods />
-        <Course />
-        <Festivals />
-      </main>
-      <Footer />
-    </>
+    <SpeechProvider>
+      <Page />
+    </SpeechProvider>
   )
 }

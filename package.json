@@ -1,5 +1,5 @@
 {
-  "name": "daegu-site",
+  "name": "hangul-easy",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -8,21 +8,13 @@
     "build": "vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs",
     "typecheck": "tsc --noEmit",
     "preview": "npm run build && wrangler pages dev",
-    "deploy": "npm run build && wrangler pages deploy",
-    "hangul:dev": "cd hangul-easy && vite",
-    "hangul:build": "cd hangul-easy && vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs",
-    "hangul:typecheck": "tsc -p hangul-easy/tsconfig.json",
-    "hangul:preview": "npm run hangul:build && cd hangul-easy && wrangler pages dev",
-    "hangul:deploy": "npm run hangul:build && cd hangul-easy && wrangler pages deploy"
+    "deploy": "npm run build && wrangler pages deploy"
   },
   "dependencies": {
-    "hono": "^4.13.19",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^5.20261116.1",
-    "@hono/vite-dev-server": "^0.26.1",
     "@tailwindcss/vite": "^4.3.5",
     "@types/node": "^26.6.6",
     "@types/react": "^19.3.0",

@@ -2,10 +2,13 @@ import { StrictMode } from 'react'
 import { renderToString } from 'react-dom/server'
 import App from './App'
 
-export function render() {
+export { head } from './head'
+export { ROUTES, SITE_URL } from './site'
+
+export function render(path: string) {
   return renderToString(
     <StrictMode>
-      <App />
+      <App path={path} />
     </StrictMode>,
   )
 }
