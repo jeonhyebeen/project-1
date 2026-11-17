@@ -24,7 +24,7 @@ let gisPromise: Promise<void> | null = null
 function loadGis() {
   gisPromise ??= new Promise((resolve, reject) => {
     const s = document.createElement('script')
-    s.src = 'https://accounts.google.com/gsi/client'
+    s.src = 'https://accounts.google.com/gsi/client?hl=en'
     s.async = true
     s.onload = () => resolve()
     s.onerror = () => reject(new Error('Google sign-in could not load'))
