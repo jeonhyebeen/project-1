@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://daegu-site.pages.dev/sitemap.xml
+Sitemap: https://project-2-67q.pages.dev/sitemap.xml
